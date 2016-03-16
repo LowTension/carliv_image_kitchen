@@ -35,7 +35,7 @@ I built from source every working module, and the lz4 binary. For everything to 
 - sudo apt-get install bzip2
 - sudo apt-get install lzop
 - sudo apt-get install xz-utils
-	
+<pre>	
 ##############################################################################
 #                                CREDITS                                     #
 #  * michfood from xda.developers for the initial ideea;                     #
@@ -45,4 +45,4 @@ I built from source every working module, and the lz4 binary. For everything to 
 #  of binaries;                                                              #
 #  * Yann Collet (https://github.com/Cyan4973/lz4) for the lz4 source code;  #
 ##############################################################################		
-	
+</pre>	
