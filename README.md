@@ -1,12 +1,13 @@
-##############################################################################
-#                                                                            #
-#                 Carliv Image Kitchen for Android v1.0                      #
-#              for android phones copyright(c)2015 carliv@xda                #
-#             including support for MTK powered phones images                #
-#                              LINUX version                                 #
-#                                                                            #
-##############################################################################	
-	
+<pre>
+******************************************************************************
+*                                                                            *
+*                 Carliv Image Kitchen for Android v1.0                      *
+*              for android phones copyright(c)2015 carliv@xda                *
+*             including support for MTK powered phones images                *
+*                              LINUX version                                 *
+*                                                                            *
+******************************************************************************	
+</pre>	
 To use this Android images kitchen is very easy. First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
 ATTENTION! few new MTK phones, from AndroidOne project (sprout) don't have MTK header and you have to use the regular script for them { ANDROID REGULAR }.
