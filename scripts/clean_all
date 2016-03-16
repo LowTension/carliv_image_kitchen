@@ -1,0 +1,38 @@
+#!/bin/bash
+e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
+##########################################################
+#                                                        #
+#           Carliv Image Kitchen for Android             #
+#     boot+recovery images copyright-2015 carliv@xda     #
+#    including support for MTK powered phones images     #
+#                                                        #
+##########################################################
+cd "$PWD";
+###########################################################
+echo -e "
+****************************************************
+*                                                  *
+*     $cy Carliv Image Kitchen for Android$c v1.0       *
+*  boot+recovery images copyright-2015$cy carliv@xda$c  *
+*  including support for MTK powered phones images *
+*                  $g LINUX version$c                  *
+*         Clean the working folder script          *
+*                                                  *
+**************************************************** 
+"; 
+
+pause()
+{
+read -s -n 1 -p "Press any key to exit...";
+}
+    
+###########################################################
+find . -maxdepth 1 -type f ! -name "clean_all" ! -name "image_info" ! -name "repack_img" ! -name "carliv" ! -name "repack_MTK_img" ! -name "unpack_img" ! -name "unpack_MTK_img" ! -name "Instructions.md" ! -name "*.img" -exec rm -f {} \;
+
+find . -maxdepth 1 -type d ! -name ".bin" ! -name "." ! -name ".*" ! -name "boot-resources" ! -name "recovery-resources" ! -name "output" ! -name "scripts" -exec rm -rf {} \;
+###########################################################
+echo "Done! Your working directory is clean now.";
+echo " ";
+pause;
+clear;
+exit;

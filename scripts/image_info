@@ -1,0 +1,44 @@
+#!/bin/bash
+e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
+##########################################################
+#                                                        #
+#           Carliv Image Kitchen for Android             #
+#     boot+recovery images copyright-2015 carliv@xda     #
+#    including support for MTK powered phones images     #
+#                                                        #
+##########################################################
+abort() { cd "$PWD"; echo " "; echo -e "$cy >>$c$r Exit script$c\n"; }
+###########################################################
+bin="$PWD/.bin";
+chmod -R 755 "$bin"/*;
+cd "$PWD";
+imageinfo=$bin/imageinfo;
+###########################################################
+echo -e "
+****************************************************
+*                                                  *
+*     $cy Carliv Image Kitchen for Android$c v0.5       *
+*  boot+recovery images copyright-2015$cy carliv@xda$c  *
+*  including support for MTK powered phones images *
+*                  $g LINUX version$c                  *
+*           Printing the image info script         *
+*                                                  *
+**************************************************** 
+";     
+###########################################################
+if [ ! "$1" ]; 
+  then
+  echo -e "$r No image file selected. ERROR!$c";
+  abort;
+  exit 1;
+fi;
+###########################################################
+file=$(basename "$1");
+echo "Your image is: $file";
+echo " ";
+###########################################################
+echo -e "Display the informations for $y $file$c";
+echo " ";
+$imageinfo "$file";
+echo "Done!";
+echo " ";
