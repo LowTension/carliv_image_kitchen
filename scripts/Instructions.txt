@@ -1,4 +1,3 @@
-<pre>
 ##############################################################################
 #                                                                            #
 #                 Carliv Image Kitchen for Android v1.0                      #
@@ -7,7 +6,7 @@
 #                            WINDOWS version                                 #
 #                                                                            #
 ##############################################################################	
-</pre>	
+	
 	To use this Android images kitchen is very easy. 
 First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
@@ -32,7 +31,7 @@ My tool doesn't have restrictions on placement. For me it worked in last partiti
 Please respect my work and if you use it don't forget to hit the THANKS button in my thread or to make a donation to buy me a coffee. And if you take it and share it on other sites, or integrate it in other tools, give proper credits for my work.
 	
 I built from source every working module, and the archiving part (gzip, xz, bzip2 + cygwin dependencies are from the latest cygwin release).
-<pre>	
+	
 ##############################################################################
 #                                CREDITS                                     #
 #  * michfood from xda.developers for the initial ideea;                     #
@@ -42,5 +41,4 @@ I built from source every working module, and the archiving part (gzip, xz, bzip
 #  of binaries;                                                              #
 #  * Dennis Bareis (dennisbareis.com) for the CTEXT DOS coloring tool;       #
 #  * Yann Collet (https://github.com/Cyan4973/lz4) for the lz4 source code;  #
-##############################################################################	
-</pre>	
+##############################################################################		
