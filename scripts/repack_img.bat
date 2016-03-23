@@ -1,7 +1,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::                                                    :::
 :::          Carliv Image Kitchen for Android          :::
-:::   boot+recovery images copyright-2015 carliv@xda   :::
+:::   boot+recovery images copyright-2016 carliv@xda   :::
 :::   including support for MTK powered phones images  :::
 :::                                                    :::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -13,8 +13,8 @@ Setlocal EnableDelayedExpansion
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::       
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.0      *{\n}"
-ctext "*     boot+recovery images (c)2015 {0B}carliv@xda{07}     *{\n}"
+ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
+ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
 ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
 ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
 echo ***************************************************
@@ -142,16 +142,21 @@ ctext "Device tree blob:{0E}  %fdt%{07}{\n}"
 set "dtb=--dt %fdt%"
 :nodt
 :newimage
-for /f "delims=" %%a in ('wmic OS Get localdatetime  ^| find "."') do set "dt=%%a"
-set "timestamp=%dt:~8,6%"	
-set "newimage=%folder%_%timestamp%"
+for /f "delims=" %%a in ('wmic os get LocalDateTime  ^| findstr ^[0-9]') do set "dt=%%a"
+set "timestamp=%dt:~0,8%-%dt:~8,4%"	
+set "newimage=%folder%-%timestamp%"
 echo(
 :command
 ctext "Your new image is{0E} %newimage%.img{07}.{\n}"
 echo(
 echo Executing the repacking command....
 echo( 
+if not exist "%file%.img-mtk" goto notmtk
+mkbootimg --kernel %kernel% --ramdisk %ramdisk% --pagesize %pagesize% --base %base% --board "%nameb%" --kernel_offset %koff% --ramdisk_offset %ramoff% --tags_offset %tagoff% %second% --cmdline "%scmdline%" %secoff% %dtb% --mtk 1 -o ..\output\%newimage%.img
+goto endcommand
+:notmtk
 mkbootimg --kernel %kernel% --ramdisk %ramdisk% --pagesize %pagesize% --base %base% --board "%nameb%" --kernel_offset %koff% --ramdisk_offset %ramoff% --tags_offset %tagoff% %second% --cmdline "%scmdline%" %secoff% %dtb% -o ..\output\%newimage%.img
+:endcommand
 del "%file%.img-ramdisk.%compress%"
 cd ..\
 echo(
@@ -163,12 +168,6 @@ echo(
 ctext "{0C}No folder selected. Exit script.{07}{\n}"
 echo(
 goto end
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:noimage
-echo(
-ctext "{0C}Please enter a name for the repacked image first.{07}{\n}"
-echo(
-goto newimage
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :error
 echo(

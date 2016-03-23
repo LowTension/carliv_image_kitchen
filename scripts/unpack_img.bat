@@ -1,7 +1,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::                                                    :::
 :::          Carliv Image Kitchen for Android          :::
-:::   boot+recovery images copyright-2015 carliv@xda   :::
+:::   boot+recovery images copyright-2016 carliv@xda   :::
 :::   including support for MTK powered phones images  :::
 :::                                                    :::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -13,8 +13,8 @@ Setlocal EnableDelayedExpansion
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::       
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.0      *{\n}"
-ctext "*     boot+recovery images (c)2015 {0B}carliv@xda{07}     *{\n}"
+ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
+ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
 ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
 ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
 echo ***************************************************
@@ -33,13 +33,16 @@ set "file=%~nx1"
 echo(
 ctext "Create the{0E} %~n2 {07}folder.{\n}"
 echo(
-::if "%folder%"=="recovery" set "folder=recovery_cka"
-::if "%folder%"=="recovery_cka" ctext "Because Windows doesn't like folders named {0E}[recovery]{07}, we changed the name for your folder to {0E}%folder%{07}{\n}"
 if exist "%folder%" rd /s/q "%folder%"
 md %folder%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo(
+if "%~3" == "" goto nomtk
+unpackbootimg -i %file% -o %folder% --mtk 1
+goto donecheck
+:nomtk
 unpackbootimg -i %file% -o %folder%
+:donecheck
 cd %folder%
 for %%a in ("%file%-ramdisk.*") do set ext=%%~xa
 ctext "Compression used:{0E} %ext:~1% {07}{\n}"
@@ -117,18 +120,6 @@ del "%file%-ramdisk.lzo"
 cd ..\
 echo(
 ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
-goto end
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:unknown
-echo(
-ctext "{0C}Your image ramdisk is packed with an unsupported archive format. Please inform the author of this tool about the error and provide the image for helping him to find a solution. Exit the script.{07}{\n}"
-echo(
-goto end
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:error
-echo(
-ctext "{0C}Your image name doesn't contain the words{0E} boot{0C} or{0E} recovery{0C}. Don't use this tool for other type of images, or rename your boot and recovery including the type in name. Exit script.{07}{\n}"
-echo(
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :ziperror

@@ -1,8 +1,8 @@
 <pre>
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v1.0                      #
-#              for android phones copyright(c)2015 carliv@xda                #
+#                 Carliv Image Kitchen for Android v1.1                      #
+#              for android phones copyright(c)2016 carliv@xda                #
 #             including support for MTK powered phones images                #
 #                            WINDOWS version                                 #
 #                                                                            #
@@ -11,11 +11,9 @@
 	To use this Android images kitchen is very easy. 
 First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
-ATTENTION! few new MTK phones, from AndroidOne project (sprout) don't have MTK header and you have to use the regular script for them { ANDROID REGULAR }.
-
 Start the kitchen by double click on { carliv.bat } file and follow the informations on the screen - it's easy. All menu letters are case Insensitive and you can type how you want [B or b, etc.], and the numbers... are just numbers :). 
 
-If your phone is MTK powered, choose the unpack menu items from right side of displayed menu, marked with the title { MTK }, otherwise use the entries from left. 
+If your phone is MTK powered the kitchen will handle these images automatically. Use same commands as for the regular images and everything else will be done under the hood.
 
 After you finished your modding job, to repack the image do the same, but this time select the repack menu items. NOTE: If you have unpacked more than one image, to repack select that image again from boot or recovery list section, and the script will know to find corresponding folder for repacking (if you have deleted that folder it will display an error on process). To go to boot or recovery list selection menu, just type [E] - Go Back from unpack/repack scripts menu, then select the image you worked on and want to repack it back. 
 
@@ -31,16 +29,15 @@ My tool doesn't have restrictions on placement. For me it worked in last partiti
 
 Please respect my work and if you use it don't forget to hit the THANKS button in my thread or to make a donation to buy me a coffee. And if you take it and share it on other sites, or integrate it in other tools, give proper credits for my work.
 	
-I built from source every working module, and the archiving part (gzip, xz, bzip2 + cygwin dependencies are from the latest cygwin release).
+I built from source every working module, but the archiving part (gzip, xz, bzip2, lz4, cpio + cygwin dependencies are from the latest cygwin release).
 <pre>	
 ##############################################################################
 #                                CREDITS                                     #
-#  * michfood from xda.developers for the initial ideea;                     #
+#  * michfood from xda.developers for the initial starting ideea;            #
 #  * osm0sis from xda.developers for his Android Image Kitchen, which gave   #
-#  me some ideeas;                                                           #
+#  me some hints;                                                            #
 #  * Android Open Source Project and Omnirom for the initial source code     #
 #  of binaries;                                                              #
 #  * Dennis Bareis (dennisbareis.com) for the CTEXT DOS coloring tool;       #
-#  * Yann Collet (https://github.com/Cyan4973/lz4) for the lz4 source code;  #
 ##############################################################################	
 </pre>	
