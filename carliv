@@ -3,13 +3,15 @@ e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";m=
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2015 carliv@xda     #
+#     boot+recovery images copyright-2016 carliv@xda     #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
 bin="$PWD/.bin";
+working="$PWD/.working";
+scripts="$PWD/.scripts";
 chmod -R 755 "$bin";
-chmod -R 755 scripts;
+chmod -R 755 "$scripts";
 cd "$PWD";
 ###########################################################
 
@@ -32,11 +34,11 @@ pause;
 boot;
 }
 
-wrongbm()
+wrongimg()
 {
-echo -e "$y You typed $bmenv - invalid option! Please try again$c";
+echo -e "$y You typed $imgenv - invalid option! Please try again$c";
 pause;
-bootmenu;
+imgmenu;
 }
 
 wrongrs()
@@ -46,179 +48,60 @@ pause;
 recovery;
 }
 
-wrongrm()
-{
-echo -e "$y You typed $rmenv - invalid option! Please try again$c";
-pause;
-recomenu;
-}
-
 quit() 
 {
+cd "$working";
+find . -maxdepth 1 -type f -exec rm -f {} \;
+cd ../;	
 clear; 
 exit;
 }
 
-boot_unpack()
+img_unpack()
 {
-cp -f boot-resources/"$bootfile" boot.img > /dev/null 2>&1;
-scripts/unpack_img  boot.img "$bootfile";
-rm -f boot.img > /dev/null 2>&1;
-pause;
-bootmenu;
-}
-
-boot_repack()
-{
-if [ -d "$bfolder" ]; 
+if [[ "$filetype" = "bootimage" ]];
 	then
-	scripts/repack_img "$bfolder";
+	cp -f "$working"/"$workfile" boot.img > /dev/null 2>&1;
+	if [ "$mtk" == "0" ];
+		then
+		"$scripts"/unpack_img  boot.img "$workfile";
+		else
+		"$scripts"/unpack_img  boot.img "$workfile" "$mtk";
+	fi;
+	rm -f boot.img > /dev/null 2>&1;
 	else
-	echo -e "The folder for repack $g $bfolder$c doesn't exists. Are you sure you didn't delete it?";
+	cp -f "$working"/"$workfile" recovery.img > /dev/null 2>&1;
+	if [ "$mtk" == "0" ];
+		then
+		"$scripts"/unpack_img  recovery.img "$workfile";
+		else
+		"$scripts"/unpack_img  recovery.img "$workfile" "$mtk";
+	fi;
+	rm -f recovery.img > /dev/null 2>&1;
 fi;
 pause;
-bootmenu;
+imgmenu;
 }
 
-boot_mtk_unpack()
+img_repack()
 {
-cp -f boot-resources/"$bootfile" boot.img > /dev/null 2>&1;
-scripts/unpack_MTK_img boot.img "$bootfile";
-rm -f boot.img > /dev/null 2>&1;
-pause;
-bootmenu;
-}
-
-boot_mtk_repack()
-{
-	if [ -d "$bfolder" ]; 
+if [ -d "$wfolder" ]; 
 	then
-	scripts/repack_MTK_img "$bfolder";
+	"$scripts"/repack_img "$wfolder";
 	else
-	echo -e "The folder for repack $g $bfolder$c doesn't exists. Are you sure you didn't delete it?";
+	echo -e "The folder for repack $g $wfolder$c doesn't exists. Are you sure you didn't delete it?";
 fi;
 pause;
-bootmenu;
+imgmenu;
 }
 
-boot_info()
+img_info()
 {
-cp -f boot-resources/"$bootfile" "$bootfile" > /dev/null 2>&1;
-scripts/image_info "$bootfile";
-rm -f "$bootfile" > /dev/null 2>&1;
+cp -f "$working"/"$workfile" "$workfile" > /dev/null 2>&1;
+"$scripts"/image_info "$workfile";
+rm -f "$workfile" > /dev/null 2>&1;
 pause;
-bootmenu;
-}
-
-reco_unpack()
-{
-cp -f recovery-resources/"$recfile" recovery.img > /dev/null 2>&1;
-scripts/unpack_img  recovery.img "$recfile";
-rm -f recovery.img > /dev/null 2>&1;
-pause;
-recomenu;
-}
-
-reco_repack()
-{
-if [ -d "$rfolder" ]; 
-	then
-	scripts/repack_img "$rfolder";
-	else
-	echo -e "The folder for repack $g $rfolder$c doesn't exists. Are you sure you didn't delete it?";
-fi;
-pause;
-recomenu;
-}
-
-reco_mtk_unpack()
-{
-cp -f recovery-resources/"$recfile" recovery.img > /dev/null 2>&1;
-scripts/unpack_MTK_img recovery.img "$recfile";
-rm -f recovery.img > /dev/null 2>&1;
-pause;
-recomenu;
-}
-
-reco_mtk_repack()
-{
-	if [ -d "$rfolder" ]; 
-	then
-	scripts/repack_MTK_img "$rfolder";
-	else
-	echo -e "The folder for repack $g $rfolder$c doesn't exists. Are you sure you didn't delete it?";
-fi;
-pause;
-recomenu;
-}
-
-reco_info()
-{
-cp -f recovery-resources/"$recfile" "$recfile" > /dev/null 2>&1;
-scripts/image_info "$recfile";
-rm -f "$recfile" > /dev/null 2>&1;
-pause;
-recomenu;
-}
-
-bootmenu()
-{
-clear;
-echo -e "
-****************************************************
-*                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-* boot+recovery images copyright(c)2015$cy carliv@xda$c *
-*  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
-****************************************************
-*              $cy BOOT scripts$c section               *
-**************************************************** 
-"; 
-echo " ";
-echo "If your image is for a phone powered by Mediatek, choose an option from right side, else choose from left. The Info menu is same for both."; 
-echo " ";
-echo -e "Your selected image is$g $bootfile$c"; 
-if [[ "$bootfile" == *boot* ]]
-	then
-	  bfolder="${bootfile%.*}";	  
-	else
-	  bfolder=boot-"${bootfile%.*}";
-fi;
-echo " ";
-if [ -d "$bfolder" ]; 
-	then
-	echo -e "The folder for repack will be$g $bfolder$c";
-	echo "Make sure that the folder exists and you didn't delete it, because if you did, it will display an error message.";
-	echo " ";	
-fi;	
-###########################################################
-echo " ";
-echo "][*************************][*************************][";
-echo -e "][   $cy ANDROID REGULAR$c      ][        $y MEDIATEK$c        ][";
-echo "][*************************][*************************][";
-echo -e "][ $cy 1. Unpack boot$c         ][ $y 3. Unpack MTK boot$c     ][";
-echo "][*************************][*************************][";
-echo -e "][ $cy 2. Repack boot$c         ][ $y 4. Repack MTK boot$c     ][";
-echo "][*************************][*************************][";
-echo "][*************************][*************************][";
-echo -e "][ $m I. Display image info$c  ][ $r E. Go to Select image$c  ][";
-echo "][*************************][*************************][";
-echo "][                 Q. Back to Main menu               ][";
-echo "][*************************][*************************][";
-echo " ";
-printf %s "Type your option [1,2,3,4,I,E,Q] then press ENTER: ";
-read bmenv;
-case $bmenv in
- 1) boot_unpack;;
- 2) boot_repack;;
- 3) boot_mtk_unpack;;
- 4) boot_mtk_repack;;
- i|I) boot_info;;
- e|E) boot;;
- q|Q) main;;
- *) wrongbm;;
-esac
+imgmenu;
 }
 
 boot()
@@ -227,8 +110,8 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-* boot+recovery images copyright(c)2015$cy carliv@xda$c *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+* boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                  $g LINUX$c version                  *
 ****************************************************
@@ -281,81 +164,23 @@ if [ "$benv" == "0" ];
 fi;
 if [ "$benv" == "" ];
     then
-      benv=1;
+      benv=none;
 fi;
-if [ "$(echo $benv | sed 's/[0-9]*//')" == "" ] || [ "benv"=="1" ];
+if [ "$(echo $benv | sed 's/[0-9]*//')" == "" ] || [ "benv"=="none" ];
 	then
 	  file_chosen=${file_array[$benv]};
 	  if [ "$file_chosen" == "" ];
       then
         wrongbs;
       else
-        bootfile="$file_chosen";
+        workfile="$file_chosen";
       fi;
 	else
 	  wrongbs;
 fi;
-bootmenu;
-}
-
-recomenu()
-{
-clear;
-echo -e "
-****************************************************
-*                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-* boot+recovery images copyright(c)2015$cy carliv@xda$c *
-*  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
-****************************************************
-*            $y RECOVERY scripts$c section             *
-****************************************************  
-";
-echo " ";
-echo "If your image is for a phone powered by Mediatek, choose an option from right side, else choose from left. The Info menu is same for both."; 
-echo " ";
-echo -e "Your selected image is$g $recfile$c"; 
-if [[ "$recfile" == *recovery* ]]
-	then
-	  rfolder="${recfile%.*}";	  
-	else
-	  rfolder=recovery-"${recfile%.*}";
-fi;
-echo " ";
-if [ -d "$rfolder" ]; 
-	then
-	echo -e "The folder for repack will be$g $rfolder$c";
-	echo "Make sure that the folder exists and you didn't delete it, because if you did, it will display an error message.";
-	echo " ";	
-fi;	
-###########################################################
-echo " ";
-echo "][*************************][*************************][";
-echo -e "][   $cy ANDROID REGULAR$c      ][        $y MEDIATEK$c        ][";
-echo "][*************************][*************************][";
-echo -e "][ $cy 1. Unpack recovery$c     ][ $y 3. Unpack MTK recovery$c ][";
-echo "][*************************][*************************][";
-echo -e "][ $cy 2. Repack recovery$c     ][ $y 4. Repack MTK recovery$c ][";
-echo "][*************************][*************************][";
-echo "][*************************][*************************][";
-echo -e "][ $m I. Display image info$c  ][ $r E. Go to Select image$c  ][";
-echo "][*************************][*************************][";
-echo "][                 Q. Back to Main menu               ][";
-echo "][*************************][*************************][";
-echo " ";
-printf %s "Type your option [1,2,3,4,I,E,Q] then press ENTER: ";
-read rmenv;
-case $rmenv in
- 1) reco_unpack;;
- 2) reco_repack;;
- 3) reco_mtk_unpack;;
- 4) reco_mtk_repack;;
- i|I) reco_info;;
- e|E) recovery;;
- q|Q) main;;
- *) wrongrm;;
-esac
+yes | cp -f boot-resources/"$workfile" "$working"/"$workfile";
+filetype=bootimage;
+imgmenu;
 }
 
 recovery()
@@ -364,8 +189,8 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-* boot+recovery images copyright(c)2015$cy carliv@xda$c *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+* boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                  $g LINUX$c version                  *
 ****************************************************
@@ -417,22 +242,85 @@ if [ "$renv" == "0" ];
       main;
 fi;
 if [ "$renv" == "" ];
-    then
-      renv=1;
+    then	
+      renv=none;
 fi;
-if [ "$(echo $renv | sed 's/[0-9]*//')" == "" ] || [ "renv"=="1" ];
+if [ "$(echo $renv | sed 's/[0-9]*//')" == "" ] || [ "renv"=="none" ];
 	then
 	  file_chosen=${file_array[$renv]};
 	  if [ "$file_chosen" == "" ];
       then
         wrongrs;
       else
-        recfile="$file_chosen";
+        workfile="$file_chosen";
       fi;
 	else
 	  wrongrs;
 fi;
-recomenu;
+yes | cp -f recovery-resources/"$workfile" "$working"/"$workfile";
+filetype=recoveryimage;
+imgmenu;
+}
+
+imgmenu()
+{
+clear;
+echo -e "
+****************************************************
+*                                                  *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+* boot+recovery images copyright(c)2016$cy carliv@xda$c *
+*  including support for$y MTK powered$c phones images *
+*                  $g LINUX$c version                  *
+****************************************************
+*              $cy IMG scripts$c section                *
+**************************************************** 
+"; 
+echo " ";
+echo " ";
+echo -e "Your selected image is$g $workfile$c"; 
+if [[ "$workfile" == *boot* || "$workfile" == *recovery* ]];
+	then
+	  wfolder="${workfile%.*}";
+	else	  
+		if [[ "$filetype" = "bootimage" ]];
+			then
+			wfolder=boot-"${workfile%.*}";
+		else
+			wfolder=recovery-"${workfile%.*}";
+		fi;
+fi;
+echo " ";
+if [ -d "$wfolder" ]; 
+	then
+	echo -e "The folder for repack will be$g $wfolder$c";
+	echo "Make sure that the folder exists and you didn't delete it, because if you did, it will display an error message.";
+	echo " ";	
+fi;	
+mtk="$(LANG=C && grep -obUaPc "\x88\x16\x88\x58" "$working"/"$workfile")";
+###########################################################
+echo " ";
+echo "][*************************][*************************][";
+echo -e "][ $cy 1. Unpack image$c        ][ $y B. Other boot image$c    ][";
+echo "][*************************][*************************][";
+echo -e "][ $cy 2. Repack image$c        ][ $y R. Other recovery image$c][";
+echo "][*************************][*************************][";
+echo -e "][               $m I. Display image info$c               ][";
+echo "][*************************][*************************][";
+echo "][                 Q. Back to Main menu               ][";
+echo "][*************************][*************************][";
+echo " ";
+printf %s "Type your option [1,2,B,R,I,Q] then press ENTER: ";
+read imgenv;
+case $imgenv in
+ 1) img_unpack;;
+ 2) img_repack;;
+ b|B) boot;;
+ r|R) recovery;;
+ i|I) img_info;;
+ q|Q) main;;
+ *) wrongimg;;
+esac
 }
 
 main()
@@ -441,8 +329,8 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-* boot+recovery images copyright(c)2015$cy carliv@xda$c *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+* boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                  $g LINUX$c version                  *
 *                                                  *
@@ -469,7 +357,7 @@ read env;
 case $env in
  b|B) boot;;
  r|R) recovery;;
- c|C) scripts/clean_all; continue;;
+ c|C) "$scripts"/clean_all; continue;;
  p|P) cat scripts/Instructions.txt; pause; continue;;
  e|E) quit;;
  *) wrong;;

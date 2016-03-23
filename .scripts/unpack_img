@@ -3,7 +3,7 @@ e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2015 carliv@xda     #
+#     boot+recovery images copyright-2016 carliv@xda     #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -13,13 +13,12 @@ bin="$PWD/.bin";
 chmod -R 755 "$bin"/*;
 cd "$PWD";
 unpackbootimg=$bin/unpackbootimg;
-lz4=$bin/lz4;
 ###########################################################
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-*  boot+recovery images copyright-2015$cy carliv@xda$c  *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*  boot+recovery images copyright-2016$cy carliv@xda$c  *
 *  including support for MTK powered phones images *
 *                  $g LINUX version$c                  *
 *             The unpacking images script          *
@@ -109,7 +108,12 @@ if [[ -z "$wimage" ]];
 fi;
 echo -e "Unpacking the$y $file$c to$y $filename$c folder....";
 echo " ";
-$unpackbootimg -i "$wimage" -o "$filename";
+if [ ! "$3" ];
+	then
+	$unpackbootimg -i "$wimage" -o "$filename";
+	else
+	$unpackbootimg -i "$wimage" -o "$filename" --mtk 1;
+fi;
 if [[ "$wimage" = "boot.img" ]];
 	then
 	rm -f boot.img;
@@ -224,7 +228,7 @@ if [ "$compress" == "lzo" ];
 fi;
 if [ "$compress" == "lz4" ];
 	then
-	$lz4 -dv "../$wimage-ramdisk.lz4" stdout | cpio -i ;
+	lz4 -dv "../$wimage-ramdisk.lz4" stdout | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a regular image with$c$cy MTK$c$r script?$c\n$r If so, please use$c$y unpack_img$c$r script. ERROR!$c";

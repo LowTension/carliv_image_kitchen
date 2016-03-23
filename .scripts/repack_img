@@ -3,7 +3,7 @@ e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2015 carliv@xda     #
+#     boot+recovery images copyright-2016 carliv@xda     #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -14,17 +14,16 @@ chmod -R 755 "$bin"/*;
 cd "$PWD";
 mkbootfs=$bin/mkbootfs;
 minigzip=$bin/minigzip;
-mtkbootimg=$bin/mtkbootimg;
-lz4=$bin/lz4;
+mkbootimg=$bin/mkbootimg;
 ###########################################################
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.0       *
-*  boot+recovery images copyright-2015$cy carliv@xda$c  *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*  boot+recovery images copyright-2016$cy carliv@xda$c  *
 *  including support for MTK powered phones images *
 *                  $g LINUX version$c                  *
-*          The repacking$y MTK$c images script         *
+*             The repacking images script          *
 *                                                  *
 **************************************************** 
 ";
@@ -36,10 +35,10 @@ if [ ! "$1" ];
 	exit 1;
 fi;
 ###########################################################
-wfolder=$(basename "$1");
-echo -e "Processing the$y $wfolder$c folder.";
+imgfolder=$(basename "$1");
+echo -e "Processing the$y $imgfolder$c folder.";
 echo " ";
-cd "$wfolder";
+cd "$imgfolder";
 ###########################################################
 echo "Repacking the image....";
 echo " ";
@@ -128,7 +127,7 @@ if [ "$compress" == "lzo" ];
 fi;
 if [ "$compress" == "lz4" ];
 	then
-	$mkbootfs ramdisk | $lz4 -l stdin stdout > "$myname".img-ramdisk.lz4;
+	$mkbootfs ramdisk | lz4 -l stdin stdout > "$myname".img-ramdisk.lz4;
 	ramdisk="$myname".img-ramdisk.lz4;
 	echo "The ramdisk is: $ramdisk";
 	if [ ! $? -eq "0" ]; 
@@ -207,16 +206,26 @@ if [[ -f "$myname".img-dt ]];
 	echo -e "Device tree blob:$y  $ldtb$c";echo " ";
 fi;
 ###########################################################
-stamp=$(date +"%H%M%S");
-newimage="$wfolder"_"$stamp".img;
+stamp=$(date +"%Y%m%d-%H%M");
+newimage="$imgfolder"_"$stamp".img;
 echo " ";
 echo "Executing the repacking command...."
 echo " ";
-$mtkbootimg --kernel "$kernel" --ramdisk "$ramdisk" --pagesize "$pagesize" --cmdline "$lcmd" --board "$bname" --base "$base" --kernel_offset "$keoff" --ramdisk_offset "$ramoff" --tags_offset "$tagoff"$losec$second$dtb -o ../output/"$newimage";
-if [ ! $? -eq "0" ]; 
+if [[ -f "$myname".img-mtk ]];
 	then
-	abort;
-	exit 1;
+	$mkbootimg --kernel "$kernel" --ramdisk "$ramdisk" --pagesize "$pagesize" --cmdline "$lcmd" --board "$bname" --base "$base" --kernel_offset "$keoff" --ramdisk_offset "$ramoff" --tags_offset "$tagoff"$losec$second$dtb --mtk 1 -o ../output/"$newimage";
+	if [ ! $? -eq "0" ]; 
+		then
+		abort;
+		exit 1;
+	fi;
+	else
+	$mkbootimg --kernel "$kernel" --ramdisk "$ramdisk" --pagesize "$pagesize" --cmdline "$lcmd" --board "$bname" --base "$base" --kernel_offset "$keoff" --ramdisk_offset "$ramoff" --tags_offset "$tagoff"$losec$second$dtb -o ../output/"$newimage";
+	if [ ! $? -eq "0" ]; 
+		then
+		abort;
+		exit 1;
+	fi;
 fi;
 compramdisk="$myname".img-ramdisk."$compress";
 rm -f "$compramdisk";

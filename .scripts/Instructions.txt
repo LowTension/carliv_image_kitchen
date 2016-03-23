@@ -1,7 +1,7 @@
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v1.0                      #
-#              for android phones copyright(c)2015 carliv@xda                #
+#                 Carliv Image Kitchen for Android v1.1                      #
+#              for android phones copyright(c)2016 carliv@xda                #
 #             including support for MTK powered phones images                #
 #                              LINUX version                                 #
 #                                                                            #
@@ -9,13 +9,11 @@
 	
 To use this Android images kitchen is very easy. First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
-ATTENTION! few new MTK phones, from AndroidOne project (sprout) don't have MTK header and you have to use the regular script for them { ANDROID REGULAR }.
+Start the kitchen by double click on { carliv } file, then choose [Run in Terminal] and follow the informations on the screen - it's easy. All menu letters are case Insensitive and you can type how you want [B or b, etc.], and the numbers... are just numbers :). If the "carliv" script doesn't run with double click, or if you don't see the dialog for Run in Terminal, Display, Run etc, but instead it opens in a text window, check the executable permission, because maybe your system changed that after unpack. If still don't see that dialog box after you checked the permissions, open a terminal window in the Kitchen folder and type [ ./carliv ] then enter, to start it manually.
 
-Start the kitchen by double click on { carliv } file, then choose [Run in Terminal] and follow the informations on the screen - it's easy. All menu letters are case Insensitive and you can type how you want [B or b, etc.], and the numbers... are just numbers :). If the "carliv" script desn't run with double click, or if you don't see the dialog for Run in Terminal, Display, Run etc, but instead it opens in a text window, check the executable permission, because maybe your system changed that after unpack. If still don't see that dialog box after you checked the permissions, open a terminal window in the Kitchen folder and type [ ./carliv ] then enter, to start it manually.
+ATTENTION again! When you unpack the archive, it is better to not use the fancy file-roller or whatever archive GUI application you have: use the terminal commands.
 
-ATTENTION again! When you unpack the archive, it is better to not use the fancy file-roller or whatever archive GUI application you have: use the terminal commands, and if you don't want to type the archive name, just use a wildcard [unzip '*.zip'] - be carefull, this will unzip any zip archive you have in the folder where you opened the terminal window, so make it in a temp folder with only this archive in it. Why to use the terminal unzip command? Because this way the permissions won't be messed up. (This is the best way to unpack zip downloaded from github).
-
-If your phone is MTK powered, choose the unpack menu items from right side of displayed menu, marked with the title { MTK }, otherwise use the entries from left. 
+If your phone is MTK powered, the built binaries and the scripts will handle these images automatically. 
 
 After you finished your modding job, to repack the image do the same, but this time select the repack menu items. NOTE: If you have unpacked more than one image, to repack select that image again from boot or recovery images list section, and the script will know to find corresponding folder for repacking (if you have deleted that folder it will display an error on process). To go to boot or recovery list selection menu, just type [E] - Go Back to select from unpack/repack scripts menu, then select the image you worked on and want to repack it back. 
 
@@ -37,11 +35,10 @@ I built from source every working module, and the lz4 binary. For everything to 
 	
 ##############################################################################
 #                                CREDITS                                     #
-#  * michfood from xda.developers for the initial ideea;                     #
+#  * michfood from xda.developers for the initial starting ideea;            #
 #  * osm0sis from xda.developers for his Android Image Kitchen, which gave   #
-#  me some ideeas;                                                           #
-#  * Android Open Source Project and Omnirom for the initial source code     #
+#  me some hints;                                                            #
+#  * Cyanogenmod Project and Omnirom for the initial source code             #
 #  of binaries;                                                              #
-#  * Yann Collet (https://github.com/Cyan4973/lz4) for the lz4 source code;  #
 ##############################################################################		
 	

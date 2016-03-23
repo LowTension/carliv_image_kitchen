@@ -3,7 +3,7 @@ e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2015 carliv@xda     #
+#     boot+recovery images copyright-2016 carliv@xda     #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -17,8 +17,8 @@ imageinfo=$bin/imageinfo;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v0.5       *
-*  boot+recovery images copyright-2015$cy carliv@xda$c  *
+*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*  boot+recovery images copyright-2016$cy carliv@xda$c  *
 *  including support for MTK powered phones images *
 *                  $g LINUX version$c                  *
 *           Printing the image info script         *
