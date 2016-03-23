@@ -33,6 +33,7 @@ I built from source every working module, and the lz4 binary. For everything to 
 - sudo apt-get install bzip2
 - sudo apt-get install lzop
 - sudo apt-get install xz-utils
+- sudo apt-get install liblz4-tool
 <pre>	
 ##############################################################################
 #                                CREDITS                                     #
