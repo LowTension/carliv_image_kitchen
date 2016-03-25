@@ -48,6 +48,58 @@ ctext "{0C}%env% is not a valid option. Please try again! {07}{\n}"
 PING -n 3 127.0.0.1>nul
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:imgmenu
+cls
+echo ***************************************************
+echo *                                                 *
+ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
+ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
+ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
+ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+echo *                                                 *
+echo ***************************************************
+ctext "*               {0B}IMG scripts{07} section               *{\n}"
+echo ***************************************************
+echo(
+ctext "Your selected image is {0A}%workfile%{07}.{\n}"
+for %%i in ("%workfile%") do set "workfolder=%%~ni"
+if %filetype%==bootimage goto setbootfolder
+if %filetype%==recoveryimage goto setrecfolder
+:setbootfolder
+if "%workfolder%"=="%workfolder:boot=%" set "workfolder=boot-%workfolder%"
+goto cleanfoldername
+:setrecfolder
+if "%workfolder%"=="%workfolder:recovery=%" set "workfolder=recovery-%workfolder%"
+:cleanfoldername
+set workfolder=%workfolder: =_%
+if not exist "%workfolder%" goto imgmenulist
+ctext "The folder for repack will be {0A}%workfolder%{07}.{\n}"
+echo Make sure that folder exists and you didn't delete it, because if you did, it will give you an error.
+:imgmenulist
+for /f %%k in ('"set LANG=C && grep -obUaPc "\x88\x16\x88\x58" "working\%workfile%""') do set mtk=%%k
+echo(
+echo ][*************************][*************************][
+ctext "][  {0B}1. Unpack image{07}        ][  {0E}B. Other boot image{07}    ][{\n}"
+echo ][*************************][*************************][
+ctext "][  {0B}2. Repack image{07}        ][  {0E}R. Other recovery image{07}][{\n}"
+echo ][*************************][*************************][
+ctext "][             {0D}I. Display image info{07}                  ][{\n}"
+echo ][*************************][*************************][
+echo ][                 Q. Go to main menu                 ][
+echo ][*************************][*************************][
+echo(
+set /p imgenv=Type your option [1,2,B,R,I,Q] then press ENTER: || set imgenv="0"
+if /I %imgenv%==1 goto img_unpack
+if /I %imgenv%==2 goto img_repack
+if /I %imgenv%==B goto boot
+if /I %imgenv%==R goto recovery
+if /I %imgenv%==I goto img_info
+if /I %imgenv%==Q goto main
+echo(
+ctext "{0C}%imgenv% is not a valid option. Please try again! {07}{\n}"
+PING -n 3 127.0.0.1>nul
+goto imgmenu
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :boot
 set workfile=
 set filetype=
@@ -160,57 +212,6 @@ echo(
 ctext "{0C}That is not a valid option. Please try again! {07}{\n}"
 PING -n 3 127.0.0.1>nul
 goto recovery
-:imgmenu
-cls
-echo ***************************************************
-echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
-echo *                                                 *
-echo ***************************************************
-ctext "*               {0B}IMG scripts{07} section               *{\n}"
-echo ***************************************************
-echo(
-ctext "Your selected image is {0A}%workfile%{07}.{\n}"
-for %%i in ("%workfile%") do set "workfolder=%%~ni"
-if %filetype%==bootimage goto setbootfolder
-if %filetype%==recoveryimage goto setrecfolder
-:setbootfolder
-if "%workfolder%"=="%workfolder:boot=%" set "workfolder=boot-%workfolder%"
-goto cleanfoldername
-:setrecfolder
-if "%workfolder%"=="%workfolder:recovery=%" set "workfolder=recovery-%workfolder%"
-:cleanfoldername
-set workfolder=%workfolder: =_%
-if not exist "%workfolder%" goto imgmenulist
-ctext "The folder for repack will be {0A}%workfolder%{07}.{\n}"
-echo Make sure that folder exists and you didn't delete it, because if you did, it will give you an error.
-:imgmenulist
-for /f %%k in ('"set LANG=C && grep -obUaPc "\x88\x16\x88\x58" "working\%workfile%""') do set mtk=%%k
-echo(
-echo ][*************************][*************************][
-ctext "][  {0B}1. Unpack image{07}        ][  {0E}B. Other boot image{07}    ][{\n}"
-echo ][*************************][*************************][
-ctext "][  {0B}2. Repack image{07}        ][  {0E}R. Other recovery image{07}][{\n}"
-echo ][*************************][*************************][
-ctext "][             {0D}I. Display image info{07}                  ][{\n}"
-echo ][*************************][*************************][
-echo ][                 Q. Go to main menu                 ][
-echo ][*************************][*************************][
-echo(
-set /p imgenv=Type your option [1,2,B,R,I,Q] then press ENTER: || set imgenv="0"
-if /I %imgenv%==1 goto img_unpack
-if /I %imgenv%==2 goto img_repack
-if /I %imgenv%==B goto boot
-if /I %imgenv%==R goto recovery
-if /I %imgenv%==I goto img_info
-if /I %imgenv%==Q goto main
-echo(
-ctext "{0C}%imgenv% is not a valid option. Please try again! {07}{\n}"
-PING -n 3 127.0.0.1>nul
-goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :img_unpack
 cls
