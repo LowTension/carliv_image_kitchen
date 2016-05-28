@@ -36,8 +36,8 @@ I built from source every working module, and the lz4 binary. For everything to 
 ##############################################################################
 #                                CREDITS                                     #
 #  * michfood from xda.developers for the initial starting ideea;            #
-#  * osm0sis from xda.developers for his Android Image Kitchen, which gave   #
-#  me some hints;                                                            #
+#  * osm0sis from xda.developers for his Android Image Kitchen (for lz4 and  #
+#  lzop repacking arguments);                                                #
 #  * Cyanogenmod Project and Omnirom for the initial source code             #
 #  of binaries;                                                              #
 ##############################################################################		
