@@ -8,7 +8,7 @@
 #                                                                            #
 ##############################################################################	
 </pre>	
-	To use this Android images kitchen is very easy. 
+	To use this Image Kitchen for Android boot and recovery images is very easy. 
 First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
 Start the kitchen by double click on { carliv.bat } file and follow the informations on the screen - it's easy. All menu letters are case Insensitive and you can type how you want [B or b, etc.], and the numbers... are just numbers :). 
@@ -33,9 +33,9 @@ I built from source every working module, but the archiving part (gzip, xz, bzip
 <pre>	
 ##############################################################################
 #                                CREDITS                                     #
-#  * michfood from xda.developers for the initial starting ideea;            #
-#  * osm0sis from xda.developers for his Android Image Kitchen, which gave   #
-#  me some hints;                                                            #
+#  * michfood from xda.developers for the initial ideea;                     #
+#  * osm0sis from xda.developers for his Android Image Kitchen, for          #
+#  repacking arguments for lz4 and lzop;                                     #
 #  * Android Open Source Project and Omnirom for the initial source code     #
 #  of binaries;                                                              #
 #  * Dennis Bareis (dennisbareis.com) for the CTEXT DOS coloring tool;       #
