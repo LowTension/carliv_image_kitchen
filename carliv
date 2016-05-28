@@ -10,8 +10,7 @@ e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";m=
 bin="$PWD/.bin";
 working="$PWD/.working";
 scripts="$PWD/.scripts";
-chmod -R 755 "$bin";
-chmod -R 755 "$scripts";
+find "$bin" "$scripts" -type f ! -name "*.*" -exec chmod +x {} \;
 cd "$PWD";
 ###########################################################
 
@@ -358,7 +357,7 @@ case $env in
  b|B) boot;;
  r|R) recovery;;
  c|C) "$scripts"/clean_all; continue;;
- p|P) cat scripts/Instructions.txt; pause; continue;;
+ p|P) cat "$scripts"/Instructions.txt; pause; continue;;
  e|E) quit;;
  *) wrong;;
 esac
