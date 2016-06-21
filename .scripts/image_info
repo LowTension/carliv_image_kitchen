@@ -14,13 +14,14 @@ chmod -R 755 "$bin"/*;
 cd "$PWD";
 imageinfo=$bin/imageinfo;
 ###########################################################
+clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 *  boot+recovery images copyright-2016$cy carliv@xda$c  *
 *  including support for MTK powered phones images *
-*                  $g LINUX version$c                  *
+*                $g LINUX x86 version$c                *
 *           Printing the image info script         *
 *                                                  *
 **************************************************** 
