@@ -94,6 +94,26 @@ pause;
 imgmenu;
 }
 
+clean_all()
+{
+find . -maxdepth 1 -type f ! -name "image_info" ! -name "repack_img" ! -name "carliv" ! -name "unpack_img" ! -name "Instructions.txt" ! -name "*.img" ! -name "." ! -name ".*" ! -name "logo.png" -exec rm -f {} \; > /dev/null 2>&1;
+find . -maxdepth 1 -type d ! -name ".bin" ! -name "." ! -name ".*" ! -name "boot-resources" ! -name "recovery-resources" ! -name "output" ! -name ".working" ! -name ".scripts" -exec rm -rf {} \; > /dev/null 2>&1;
+echo "Done! Your working directory is clean now.";
+sleep 2;
+main;	
+}
+
+clean_output()
+{
+cd output;
+find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
+find . -maxdepth 1 -type d -exec rm -rf {} \; > /dev/null 2>&1;
+cd ../;
+echo "Done! Your output directory is clean now.";
+sleep 2;
+main;	
+}
+
 img_info()
 {
 cp -f "$working"/"$workfile" "$workfile" > /dev/null 2>&1;
@@ -109,10 +129,10 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
+*                $g LINUX x64 version$c                *
 ****************************************************
 *               $cy BOOT images$c section               *
 **************************************************** 
@@ -188,10 +208,10 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
+*                $g LINUX x64 version$c                *
 ****************************************************
 *             $y RECOVERY images$c section             *
 **************************************************** 
@@ -267,10 +287,10 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
+*                $g LINUX x64 version$c                *
 ****************************************************
 *              $cy IMG scripts$c section                *
 **************************************************** 
@@ -328,10 +348,10 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
-*                  $g LINUX$c version                  *
+*                $g LINUX x64 version$c                *
 *                                                  *
 **************************************************** 
 ";     
@@ -346,17 +366,20 @@ echo -e "][$y R.   RECOVERY$c          ][";
 echo "][************************][";
 echo -e "][$g C.   CLEAR FOLDER$c      ][";
 echo "][************************][";
+echo -e "][$m O.   CLEAR OUTPUT$c      ][";
+echo "][************************][";
 echo "][ P.   SEE INSTRUCTIONS  ][";
 echo "][************************][";
 echo -e "][$r E.   EXIT$c              ][";
 echo "][************************][";
 echo " ";
-printf %s "Type your option [B,R,C,P,E] then press ENTER: ";
+printf %s "Type your option [B,R,C,O,P,E] then press ENTER: ";
 read env;
 case $env in
  b|B) boot;;
  r|R) recovery;;
- c|C) "$scripts"/clean_all; continue;;
+ c|C) clean_all;;
+ o|O) clean_output;;
  p|P) cat "$scripts"/Instructions.txt; pause; continue;;
  e|E) quit;;
  *) wrong;;

@@ -14,13 +14,14 @@ chmod -R 755 "$bin"/*;
 cd "$PWD";
 unpackbootimg=$bin/unpackbootimg;
 ###########################################################
+clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.1       *
+*     $cy Carliv Image Kitchen for Android$c v1.2       *
 *  boot+recovery images copyright-2016$cy carliv@xda$c  *
 *  including support for MTK powered phones images *
-*                  $g LINUX version$c                  *
+*                $g LINUX x64 version$c                *
 *             The unpacking images script          *
 *                                                  *
 ****************************************************
@@ -166,7 +167,7 @@ if [ "$compress" == "gz" ];
 	gzip -dcv "../$wimage-ramdisk.gz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a$c$cy MTK$c$r image with regular script?$c\n$r If so, please use$c$y unpack_MTK_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -179,7 +180,7 @@ if [ "$compress" == "lzma" ];
 	xz -dcv "../$wimage-ramdisk.lzma" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a$c$cy MTK$c$r image with regular script?$c\n$r If so, please use$c$y unpack_MTK_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -192,7 +193,7 @@ if [ "$compress" == "xz" ];
 	xz -dcv "../$wimage-ramdisk.xz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a$c$cy MTK$c$r image with regular script?$c\n$r If so, please use$c$y unpack_MTK_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -205,7 +206,7 @@ if [ "$compress" == "bz2" ];
 	bzip2 -dcv "../$wimage-ramdisk.bz2" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a$c$cy MTK$c$r image with regular script?$c\n$r If so, please use$c$y unpack_MTK_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -218,7 +219,7 @@ if [ "$compress" == "lzo" ];
 	lzop -dcv "../$wimage-ramdisk.lzo" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a regular image with$c$cy MTK$c$r script?$c\n$r If so, please use$c$y unpack_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -231,7 +232,7 @@ if [ "$compress" == "lz4" ];
 	lz4 -dv "../$wimage-ramdisk.lz4" stdout | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt. Are you trying to unpack a regular image with$c$cy MTK$c$r script?$c\n$r If so, please use$c$y unpack_img$c$r script. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
