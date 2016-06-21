@@ -10,41 +10,49 @@ cd "%~dp0"
 IF EXIST "%~dp0\bin" SET PATH=%PATH%;"%~dp0\bin"
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Setlocal EnableDelayedExpansion
+attrib +h "bin" >nul
+attrib +h "scripts" >nul
+attrib +h "working" >nul
+ufind "%~dp0\bin" "%~dp0\scripts" -regex ".*\.\(exe\|bat\)" -exec chmod +x {} ;
+if %errorlevel% neq 0 goto error
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :main
 cls
 echo( 
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo *                                                 *
 echo ***************************************************
 echo(
-echo  Choose what kind of image you need to work on.
+echo Choose what kind of image you need to work on.
 echo(
 echo ][**********************][
-ctext "][ {0B}B.  BOOT {07}            ][{\n}"
+cecho ][ {0B}B.  BOOT {#}            ][{\n}
 echo ][**********************][
-ctext "][ {0E}R.  RECOVERY {07}        ][{\n}"
+cecho ][ {0E}R.  RECOVERY {#}        ][{\n}
 echo ][**********************][
-ctext "][ {0A}C.  CLEAR FOLDER {07}    ][{\n}"
+cecho ][ {0A}C.  CLEAR FOLDER {#}    ][{\n}
+echo ][**********************][
+cecho ][ {0D}O.  CLEAR OUTPUT {#}    ][{\n}
 echo ][**********************][
 echo ][ P.  SEE INSTRUCTIONS ][
 echo ][**********************][
-ctext "][ {0C}E.  EXIT {07}            ][{\n}"
+cecho ][ {0C}E.  EXIT {#}            ][{\n}
 echo ][**********************][
 echo(
-set /p env=Type your option [B,R,C,P,E] then press ENTER: || set env="0"
+set /p env=Type your option [B,R,C,O,P,E] then press ENTER: || set env="0"
 if /I %env%==B goto boot
 if /I %env%==R goto recovery
 if /I %env%==C goto delete_all
+if /I %env%==O goto delete_output
 if /I %env%==P goto instructions
 if /I %env%==E goto end
 echo(
-ctext "{0C}%env% is not a valid option. Please try again! {07}{\n}"
+cecho {0C}%env% is not a valid option. Please try again! {#}{\n}
 PING -n 3 127.0.0.1>nul
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -52,16 +60,16 @@ goto main
 cls
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo *                                                 *
 echo ***************************************************
-ctext "*               {0B}IMG scripts{07} section               *{\n}"
+cecho *               {0B}IMG scripts{#} section               *{\n}
 echo ***************************************************
 echo(
-ctext "Your selected image is {0A}%workfile%{07}.{\n}"
+cecho Your selected image is {0A}%workfile%{#}.{\n}
 for %%i in ("%workfile%") do set "workfolder=%%~ni"
 if %filetype%==bootimage goto setbootfolder
 if %filetype%==recoveryimage goto setrecfolder
@@ -73,17 +81,17 @@ if "%workfolder%"=="%workfolder:recovery=%" set "workfolder=recovery-%workfolder
 :cleanfoldername
 set workfolder=%workfolder: =_%
 if not exist "%workfolder%" goto imgmenulist
-ctext "The folder for repack will be {0A}%workfolder%{07}.{\n}"
+cecho The folder for repack will be {0A}%workfolder%{#}.{\n}
 echo Make sure that folder exists and you didn't delete it, because if you did, it will give you an error.
 :imgmenulist
 for /f %%k in ('"set LANG=C && grep -obUaPc "\x88\x16\x88\x58" "working\%workfile%""') do set mtk=%%k
 echo(
 echo ][*************************][*************************][
-ctext "][  {0B}1. Unpack image{07}        ][  {0E}B. Other boot image{07}    ][{\n}"
+cecho ][  {0B}1. Unpack image{#}        ][  {0E}B. Other boot image{#}    ][{\n}
 echo ][*************************][*************************][
-ctext "][  {0B}2. Repack image{07}        ][  {0E}R. Other recovery image{07}][{\n}"
+cecho ][  {0B}2. Repack image{#}        ][  {0E}R. Other recovery image{#}][{\n}
 echo ][*************************][*************************][
-ctext "][             {0D}I. Display image info{07}                  ][{\n}"
+cecho ][             {0D}I. Display image info{#}                  ][{\n}
 echo ][*************************][*************************][
 echo ][                 Q. Go to main menu                 ][
 echo ][*************************][*************************][
@@ -96,7 +104,7 @@ if /I %imgenv%==R goto recovery
 if /I %imgenv%==I goto img_info
 if /I %imgenv%==Q goto main
 echo(
-ctext "{0C}%imgenv% is not a valid option. Please try again! {07}{\n}"
+cecho {0C}%imgenv% is not a valid option. Please try again! {#}{\n}
 PING -n 3 127.0.0.1>nul
 goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -108,13 +116,13 @@ set mtk=
 cls
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo *                                                 *
 echo ***************************************************
-ctext "*                {0B}BOOT images{07} section              *{\n}"
+cecho *                {0B}BOOT images{#} section              *{\n}
 echo ***************************************************
 echo(
 for /f %%g in ('dir /b "boot-resources\*.img"') do (
@@ -153,7 +161,7 @@ copy "boot-resources\%bootlist%" "working\%workfile%" >nul
 goto imgmenu
 :booterror
 echo(
-ctext "{0C}That is not a valid option. Please try again! {07}{\n}"
+cecho {0C}That is not a valid option. Please try again! {#}{\n}
 PING -n 3 127.0.0.1>nul
 goto boot
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -165,13 +173,13 @@ set mtk=
 cls
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo *                                                 *
 echo ***************************************************
-ctext "*             {0E}RECOVERY images{07} section             *{\n}"
+cecho *             {0E}RECOVERY images{#} section             *{\n}
 echo ***************************************************
 echo(
 for /f %%a in ('dir /b "recovery-resources\*.img"') do (
@@ -209,7 +217,7 @@ copy "recovery-resources\%reclist%" "working\%workfile%" >nul
 goto imgmenu
 :recerror
 echo(
-ctext "{0C}That is not a valid option. Please try again! {07}{\n}"
+cecho {0C}That is not a valid option. Please try again! {#}{\n}
 PING -n 3 127.0.0.1>nul
 goto recovery
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -239,11 +247,13 @@ if exist recovery.img del recovery.img >nul
 if exist unpack_img.bat del unpack_img.bat >nul
 pause
 goto imgmenu
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :img_repack
 cls
 copy "scripts\repack_img.bat" "repack_img.bat" >nul
 call repack_img.bat "%workfolder%"
-ctext "You can find it in {0E}[output]{07} folder.{\n}"
+echo(
+cecho You can find it in {0E}[output]{#} folder.{\n}
 if exist repack_img.bat del repack_img.bat >nul
 pause
 goto imgmenu
@@ -270,6 +280,20 @@ call clean_all.bat
 if exist clean_all.bat del clean_all.bat >nul
 PING -n 3 127.0.0.1>nul
 goto main
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:delete_output
+cls
+copy "scripts\clean_output.bat" "clean_output.bat" >nul
+call clean_output.bat
+if exist clean_output.bat del clean_output.bat >nul
+PING -n 3 127.0.0.1>nul
+goto main
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:error
+echo(
+cecho {0C}The scripts and executables can't get execution permission! The kitchen won't run this way. {#}{\n}
+PING -n 3 127.0.0.1>nul
+goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end
 echo(

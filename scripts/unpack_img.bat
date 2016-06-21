@@ -13,10 +13,10 @@ Setlocal EnableDelayedExpansion
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::       
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo ***************************************************
 echo *           The unpacking images script           *
 echo ***************************************************
@@ -26,12 +26,12 @@ if "%~1" == "" goto noinput
 if "%~2" == "" goto noinput
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 set "folder=%~n2"
-ctext "Your image:{0E} %folder%.img {07}{\n}"
+cecho Your image:{0E} %folder%.img {#}{\n}
 set "file=%~nx1"
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :unpack
 echo(
-ctext "Create the{0E} %~n2 {07}folder.{\n}"
+cecho Create the{0E} %~n2 {#}folder.{\n}
 echo(
 if exist "%folder%" rd /s/q "%folder%"
 md %folder%
@@ -45,7 +45,7 @@ unpackbootimg -i %file% -o %folder%
 :donecheck
 cd %folder%
 for %%a in ("%file%-ramdisk.*") do set ext=%%~xa
-ctext "Compression used:{0E} %ext:~1% {07}{\n}"
+cecho Compression used:{0E} %ext:~1% {#}{\n}
 type nul > %file%-ramdisk-compress
 echo %ext:~1% > "%file%-ramdisk-compress"
 echo(
@@ -64,7 +64,7 @@ cd ..\
 del "%file%-ramdisk.gz"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lzma
@@ -75,7 +75,7 @@ cd ..\
 del "%file%-ramdisk.lzma"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :xz
@@ -86,7 +86,7 @@ cd ..\
 del "%file%-ramdisk.xz"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :bz2
@@ -97,7 +97,7 @@ cd ..\
 del "%file%-ramdisk.bz2"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lz4
@@ -108,7 +108,7 @@ cd ..\
 del "%file%-ramdisk.lz4"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lzo
@@ -119,18 +119,18 @@ cd ..\
 del "%file%-ramdisk.lzo"
 cd ..\
 echo(
-ctext "Done. Your image is unpacked in{0E} %folder% {07}folder.{\n}"
+cecho Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :ziperror
 echo(
-ctext "{0C}Your ramdisk archive is corrupt. Are you trying to unpack a {0B}MTK{0C} image with regular script? If so, please use unpack_MTK_img script. Exit script.{07}{\n}"
+cecho {0C}Your ramdisk archive is corrupt or unknown format. Exit script.{#}{\n}
 echo(
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :noinput
 echo(
-ctext "{0C}No image file selected. Exit script.{07}{\n}"
+cecho {0C}No image file selected. Exit script.{#}{\n}
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end

@@ -10,7 +10,7 @@ cd "%~dp0"
 IF EXIST "%~dp0\bin" SET PATH=%PATH%;"%~dp0\bin"
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Setlocal EnableDelayedExpansion
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::    
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo(    
 echo ***************************************************
 echo *                                                 *
@@ -19,28 +19,15 @@ cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo ***************************************************
-echo *          Printing the image info script         *
+echo *           Cleaning the output folder            *
 echo ***************************************************
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-if "%~1" == "" goto noinput
+for /d %%d in ("%~dp0\output\*") do rd /s /q "%%d" >nul
+for /f %%a in ("%~dp0\output\*") do del /q "%%a" >nul 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set "file=%~nx1"
 echo(
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-cecho Display the informations for{0E} %file%{#}.{\n}
-echo(
-imageinfo %file%
-echo(
-echo(
-cecho Done. All informations are saved in{0E} %~n1.img-infos.txt{#}.{\n}
+cecho {0E}The output folder is clean now!{#}{\n}
 goto end
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:noinput
 echo(
-echo(
-cecho {0C}No image file selected. Exit script.{#}{\n}
-echo(
-echo(
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end

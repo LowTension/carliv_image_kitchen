@@ -14,10 +14,10 @@ Setlocal EnableDelayedExpansion
 echo(    
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x86 {#}version               *{\n}
 echo ***************************************************
 echo *           Cleaning the kitchen folder           *
 echo ***************************************************
@@ -40,7 +40,7 @@ attrib -h "*.bat" >nul
 attrib -h "*.img" >nul 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo(
-ctext "{0E}The kitchen folder is clean now!{07}{\n}"
+cecho {0E}The kitchen folder is clean now!{#}{\n}
 goto end
 echo(
 :end
