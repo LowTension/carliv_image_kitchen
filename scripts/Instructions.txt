@@ -1,13 +1,13 @@
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v1.1                      #
+#                 Carliv Image Kitchen for Android v1.2                      #
 #              for android phones copyright(c)2016 carliv@xda                #
 #             including support for MTK powered phones images                #
 #                            WINDOWS version                                 #
 #                                                                            #
 ##############################################################################	
 	
-	To use this Image Kitchen for Android boot and recovery images is very easy. 
+	To use this Android images kitchen is very easy. 
 First, place your image files in corresponding folders: boot images in [boot-resources] and recovery images in [recovery-resources].
 
 Start the kitchen by double click on { carliv.bat } file and follow the informations on the screen - it's easy. All menu letters are case Insensitive and you can type how you want [B or b, etc.], and the numbers... are just numbers :). 
@@ -28,14 +28,14 @@ My tool doesn't have restrictions on placement. For me it worked in last partiti
 
 Please respect my work and if you use it don't forget to hit the THANKS button in my thread or to make a donation to buy me a coffee. And if you take it and share it on other sites, or integrate it in other tools, give proper credits for my work.
 	
-I built from source every working module, but the archiving part (gzip, xz, bzip2, lz4, cpio + cygwin dependencies are from the latest cygwin release).
+I built from source every working module, and the archiving part (gzip, xz, bzip2 + cygwin dependencies are from the latest cygwin release).
 	
 ##############################################################################
 #                                CREDITS                                     #
 #  * michfood from xda.developers for the initial ideea;                     #
-#  * osm0sis from xda.developers for his Android Image Kitchen, for          #
-#  repacking arguments for lz4 and lzop;                                     #
+#  * osm0sis from xda.developers for his Android Image Kitchen, for lz4 and  #
+#  lzop repacking options;                                                   #
 #  * Android Open Source Project and Omnirom for the initial source code     #
 #  of binaries;                                                              #
-#  * Dennis Bareis (dennisbareis.com) for the CTEXT DOS coloring tool;       #
+#  * Thomas Polaert (thomas_polaert@yahoo.fr) for CECHO DOS coloring tool;   #
 ##############################################################################		

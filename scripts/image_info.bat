@@ -14,10 +14,10 @@ Setlocal EnableDelayedExpansion
 echo(    
 echo ***************************************************
 echo *                                                 *
-ctext "*      {0B}Carliv Image Kitchen for Android{07} v1.1      *{\n}"
-ctext "*     boot+recovery images (c)2016 {0B}carliv@xda{07}     *{\n}"
-ctext "* {07}including support for {0E}MTK powered {07}phones images *{\n}"
-ctext "*                 {0A}WINDOWS {07}version                 *{\n}"
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
+cecho * including support for {0E}MTK powered {#}phones images *{\n}
+cecho *               {0A}WINDOWS x64 {#}version               *{\n}
 echo ***************************************************
 echo *          Printing the image info script         *
 echo ***************************************************
@@ -28,18 +28,18 @@ if "%~1" == "" goto noinput
 set "file=%~nx1"
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-ctext "Display the informations for{0E} %file%{07}.{\n}"
+cecho Display the informations for{0E} %file%{#}.{\n}
 echo(
 imageinfo %file%
 echo(
 echo(
-ctext "Done. All informations are saved in{0E} %~n1.img-infos.txt{07}.{\n}"
+cecho Done. All informations are saved in{0E} %~n1.img-infos.txt{#}.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :noinput
 echo(
 echo(
-ctext "{0C}No image file selected. Exit script.{07}{\n}"
+cecho {0C}No image file selected. Exit script.{#}{\n}
 echo(
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
