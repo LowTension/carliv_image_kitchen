@@ -1,7 +1,7 @@
 <pre>
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v1.1                      #
+#                 Carliv Image Kitchen for Android v1.2                      #
 #              for android phones copyright(c)2016 carliv@xda                #
 #             including support for MTK powered phones images                #
 #                            WINDOWS version                                 #
