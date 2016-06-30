@@ -13,7 +13,7 @@ Setlocal EnableDelayedExpansion
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::       
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x86 {#}version               *{\n}
@@ -37,10 +37,6 @@ if exist "%folder%" rd /s/q "%folder%"
 md %folder%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo(
-if "%~3" == "" goto nomtk
-unpackbootimg -i %file% -o %folder% --mtk 1
-goto donecheck
-:nomtk
 unpackbootimg -i %file% -o %folder%
 :donecheck
 cd %folder%
