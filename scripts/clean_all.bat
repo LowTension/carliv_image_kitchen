@@ -14,7 +14,7 @@ Setlocal EnableDelayedExpansion
 echo(    
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x64 {#}version               *{\n}

@@ -21,7 +21,7 @@ cls
 echo( 
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x64 {#}version               *{\n}
@@ -60,7 +60,7 @@ goto main
 cls
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x64 {#}version               *{\n}
@@ -84,7 +84,6 @@ if not exist "%workfolder%" goto imgmenulist
 cecho The folder for repack will be {0A}%workfolder%{#}.{\n}
 echo Make sure that folder exists and you didn't delete it, because if you did, it will give you an error.
 :imgmenulist
-for /f %%k in ('"set LANG=C && grep -obUaPc "\x88\x16\x88\x58" "working\%workfile%""') do set mtk=%%k
 echo(
 echo ][*************************][*************************][
 cecho ][  {0B}1. Unpack image{#}        ][  {0E}B. Other boot image{#}    ][{\n}
@@ -112,11 +111,10 @@ goto imgmenu
 set workfile=
 set filetype=
 set workfolder=
-set mtk=
 cls
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x64 {#}version               *{\n}
@@ -169,11 +167,10 @@ goto boot
 set workfile=
 set filetype=
 set workfolder=
-set mtk=
 cls
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.2      *{\n}
+cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
 cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
 cecho * including support for {0E}MTK powered {#}phones images *{\n}
 cecho *               {0A}WINDOWS x64 {#}version               *{\n}
@@ -228,18 +225,10 @@ if %filetype%==bootimage goto unpackboot
 if %filetype%==recoveryimage goto unpackrecovery
 :unpackboot
 copy "working\%workfile%" boot.img >nul
-if %mtk%==0 goto unpackbootreg
-call unpack_img.bat boot.img %workfolder% %mtk%
-goto endunpack
-:unpackbootreg
 call unpack_img.bat boot.img %workfolder%
 goto endunpack
 :unpackrecovery
 copy "working\%workfile%" recovery.img >nul
-if %mtk%==0 goto unpackrecreg
-call unpack_img.bat recovery.img %workfolder% %mtk%
-goto endunpack
-:unpackrecreg
 call unpack_img.bat recovery.img %workfolder%
 :endunpack
 if exist boot.img del boot.img >nul
@@ -290,7 +279,7 @@ goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :error
 echo(
-cecho {0C}The scripts and executables can't get execution permission! The kitchen won't run this way. {#}{\n}
+cecho {0C}The scripts and executables can't get execution permissions! The kitchen won't run this way. {#}{\n}
 PING -n 3 127.0.0.1>nul
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
