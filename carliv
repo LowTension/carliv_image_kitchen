@@ -61,21 +61,11 @@ img_unpack()
 if [[ "$filetype" = "bootimage" ]];
 	then
 	cp -f "$working"/"$workfile" boot.img > /dev/null 2>&1;
-	if [ "$mtk" == "0" ];
-		then
-		"$scripts"/unpack_img  boot.img "$workfile";
-		else
-		"$scripts"/unpack_img  boot.img "$workfile" "$mtk";
-	fi;
+	"$scripts"/unpack_img  boot.img "$workfile";
 	rm -f boot.img > /dev/null 2>&1;
 	else
 	cp -f "$working"/"$workfile" recovery.img > /dev/null 2>&1;
-	if [ "$mtk" == "0" ];
-		then
-		"$scripts"/unpack_img  recovery.img "$workfile";
-		else
-		"$scripts"/unpack_img  recovery.img "$workfile" "$mtk";
-	fi;
+	"$scripts"/unpack_img  recovery.img "$workfile";
 	rm -f recovery.img > /dev/null 2>&1;
 fi;
 pause;
@@ -98,7 +88,7 @@ clean_all()
 {
 find . -maxdepth 1 -type f ! -name "image_info" ! -name "repack_img" ! -name "carliv" ! -name "unpack_img" ! -name "Instructions.txt" ! -name "*.img" ! -name "." ! -name ".*" ! -name "logo.png" -exec rm -f {} \; > /dev/null 2>&1;
 find . -maxdepth 1 -type d ! -name ".bin" ! -name "." ! -name ".*" ! -name "boot-resources" ! -name "recovery-resources" ! -name "output" ! -name ".working" ! -name ".scripts" -exec rm -rf {} \; > /dev/null 2>&1;
-echo "Done! Your working directory is clean now.";
+echo "$y Done! Your working directory is clean now.$c";
 sleep 2;
 main;	
 }
@@ -109,7 +99,7 @@ cd output;
 find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
 find . -maxdepth 1 -type d -exec rm -rf {} \; > /dev/null 2>&1;
 cd ../;
-echo "Done! Your output directory is clean now.";
+echo "$y Done! Your output directory is clean now.$c";
 sleep 2;
 main;	
 }
@@ -129,7 +119,7 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.2       *
+*     $cy Carliv Image Kitchen for Android$c v1.3       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                $g LINUX x86 version$c                *
@@ -208,7 +198,7 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.2       *
+*     $cy Carliv Image Kitchen for Android$c v1.3       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                $g LINUX x86 version$c                *
@@ -287,7 +277,7 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.2       *
+*     $cy Carliv Image Kitchen for Android$c v1.3       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                $g LINUX x86 version$c                *
@@ -315,8 +305,7 @@ if [ -d "$wfolder" ];
 	echo -e "The folder for repack will be$g $wfolder$c";
 	echo "Make sure that the folder exists and you didn't delete it, because if you did, it will display an error message.";
 	echo " ";	
-fi;	
-mtk="$(LANG=C && grep -obUaPc "\x88\x16\x88\x58" "$working"/"$workfile")";
+fi;
 ###########################################################
 echo " ";
 echo "][*************************][*************************][";
@@ -348,7 +337,7 @@ clear;
 echo -e "
 ****************************************************
 *                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.2       *
+*     $cy Carliv Image Kitchen for Android$c v1.3       *
 * boot+recovery images copyright(c)2016$cy carliv@xda$c *
 *  including support for$y MTK powered$c phones images *
 *                $g LINUX x86 version$c                *
