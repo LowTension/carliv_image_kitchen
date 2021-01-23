@@ -1,258 +1,182 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::                                                    :::
 :::          Carliv Image Kitchen for Android          :::
-:::   boot+recovery images copyright-2016 carliv@xda   :::
+:::  boot ^& recovery images copyright-2020 carliv.eu   :::
 :::   including support for MTK powered phones images  :::
 :::                                                    :::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @echo off
 cd "%~dp0"
-IF EXIST "%~dp0\bin" SET PATH=%PATH%;"%~dp0\bin"
+IF EXIST "%~dp0\bin" SET PATH="%~dp0\bin";%PATH%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Setlocal EnableDelayedExpansion
-attrib +h "bin" >nul
-attrib +h "scripts" >nul
-attrib +h "working" >nul
+attrib +h "bin" >nul 2>&1
+attrib +h "scripts" >nul 2>&1
+attrib +h "working" >nul 2>&1
 ufind "%~dp0\bin" "%~dp0\scripts" -regex ".*\.\(exe\|bat\)" -exec chmod +x {} ;
 if %errorlevel% neq 0 goto error
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :main
 cls
+ver > nul
 echo( 
+ecco {1B}
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
-cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
-cecho * including support for {0E}MTK powered {#}phones images *{\n}
-cecho *               {0A}WINDOWS x86 {#}version               *{\n}
+echo *      Carliv Image Kitchen for Android v2.1      *
+echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x86 version               *
 echo *                                                 *
-echo ***************************************************
+ecco ***************************************************{0F}{\n}
 echo(
-echo Choose what kind of image you need to work on.
+echo  Choose what kind of image you need to work on.
 echo(
 echo ][**********************][
-cecho ][ {0B}B.  BOOT {#}            ][{\n}
+ecco ][ {0B}I.  IMAGE MENU {#}      ][{\n}
 echo ][**********************][
-cecho ][ {0E}R.  RECOVERY {#}        ][{\n}
+ecco ][ {0A}C.  CLEAR FOLDER {#}    ][{\n}
 echo ][**********************][
-cecho ][ {0A}C.  CLEAR FOLDER {#}    ][{\n}
-echo ][**********************][
-cecho ][ {0D}O.  CLEAR OUTPUT {#}    ][{\n}
+ecco ][ {0D}O.  CLEAR OUTPUT {#}    ][{\n}
 echo ][**********************][
 echo ][ P.  SEE INSTRUCTIONS ][
 echo ][**********************][
-cecho ][ {0C}E.  EXIT {#}            ][{\n}
+ecco ][ {0C}E.  EXIT {#}            ][{\n}
 echo ][**********************][
 echo(
-set /p env=Type your option [B,R,C,O,P,E] then press ENTER: || set env="0"
-if /I %env%==B goto boot
-if /I %env%==R goto recovery
-if /I %env%==C goto delete_all
-if /I %env%==O goto delete_output
-if /I %env%==P goto instructions
-if /I %env%==E goto end
+choice /C ICOPE /N /M "Choose your option [ I - C - O - P - E ]"
+if %errorlevel% equ 1 goto setimg
+if %errorlevel% equ 2 goto delete_all
+if %errorlevel% equ 3 goto delete_output
+if %errorlevel% equ 4 goto instructions
+if %errorlevel% equ 5 goto end
 echo(
-cecho {0C}%env% is not a valid option. Please try again! {#}{\n}
-PING -n 3 127.0.0.1>nul
-goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :imgmenu
 cls
+ver > nul
+ecco {1B}
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
-cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
-cecho * including support for {0E}MTK powered {#}phones images *{\n}
-cecho *               {0A}WINDOWS x86 {#}version               *{\n}
+echo *      Carliv Image Kitchen for Android v2.1      *
+echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x86 version               *
 echo *                                                 *
-echo ***************************************************
-cecho *               {0B}IMG scripts{#} section               *{\n}
+ecco ***************************************************{0F}{\n}
+ecco *               {0B}IMG scripts{#} section               *{\n}
 echo ***************************************************
 echo(
-cecho Your selected image is {0A}%workfile%{#}.{\n}
+ecco Your selected image is {0A}%workfile%{#}.{\n}
 for %%i in ("%workfile%") do set "workfolder=%%~ni"
-if %filetype%==bootimage goto setbootfolder
-if %filetype%==recoveryimage goto setrecfolder
-:setbootfolder
-if "%workfolder%"=="%workfolder:boot=%" set "workfolder=boot-%workfolder%"
-goto cleanfoldername
-:setrecfolder
-if "%workfolder%"=="%workfolder:recovery=%" set "workfolder=recovery-%workfolder%"
-:cleanfoldername
-set workfolder=%workfolder: =_%
 if not exist "%workfolder%" goto imgmenulist
-cecho The folder for repack will be {0A}%workfolder%{#}.{\n}
+ecco The folder for repack will be {0A}%workfolder%{#}.{\n}
 echo Make sure that folder exists and you didn't delete it, because if you did, it will give you an error.
 :imgmenulist
 echo(
 echo ][*************************][*************************][
-cecho ][  {0B}1. Unpack image{#}        ][  {0E}B. Other boot image{#}    ][{\n}
+ecco ][  {0B}1. Unpack image{#}        ][  {0E}I. Other image{#}         ][{\n}
 echo ][*************************][*************************][
-cecho ][  {0B}2. Repack image{#}        ][  {0E}R. Other recovery image{#}][{\n}
-echo ][*************************][*************************][
-cecho ][             {0D}I. Display image info{#}                  ][{\n}
-echo ][*************************][*************************][
-echo ][                 Q. Go to main menu                 ][
+ecco ][  {0A}2. Repack image{#}        ][  Q. Go to main menu     ][{\n}
 echo ][*************************][*************************][
 echo(
-set /p imgenv=Type your option [1,2,B,R,I,Q] then press ENTER: || set imgenv="0"
-if /I %imgenv%==1 goto img_unpack
-if /I %imgenv%==2 goto img_repack
-if /I %imgenv%==B goto boot
-if /I %imgenv%==R goto recovery
-if /I %imgenv%==I goto img_info
-if /I %imgenv%==Q goto main
+choice /C 12IQ /N /M "Choose your option [ 1 - 2 - I - Q ]"
+if %errorlevel% equ 1 goto img_unpack
+if %errorlevel% equ 2 goto img_repack
+if %errorlevel% equ 3 goto setimg
+if %errorlevel% equ 4 goto main
 echo(
-cecho {0C}%imgenv% is not a valid option. Please try again! {#}{\n}
-PING -n 3 127.0.0.1>nul
-goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:boot
+:setimg
 set workfile=
-set filetype=
 set workfolder=
 cls
+ver > nul
+ecco {1B}
 echo ***************************************************
 echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
-cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
-cecho * including support for {0E}MTK powered {#}phones images *{\n}
-cecho *               {0A}WINDOWS x86 {#}version               *{\n}
+echo *      Carliv Image Kitchen for Android v2.1      *
+echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x86 version               *
 echo *                                                 *
-echo ***************************************************
-cecho *                {0B}BOOT images{#} section              *{\n}
-echo ***************************************************
+ecco ***************************************************{0F}{\n}
 echo(
-for /f %%g in ('dir /b "boot-resources\*.img"') do (
-   goto loadboots
+for /f %%g in ('dir /b "input\*.img"') do (
+   goto loadimages
 )
-set /p noboot=There is no image in your [boot-resources] folder. Place some in there and then press [B] to start again or [Q] to go to main menu, then press ENTER: || set noboot="0"
-if %noboot%=="0" goto booterror
-if /I %noboot%==B goto boot
-if /I %noboot%==Q goto main
-:loadboots
+echo ---------------------------------------------------
+echo -  I. - Refresh.
+echo ---------------------------------------------------
+echo -  Q. - Go to Main menu.
+echo ---------------------------------------------------
+echo(
+choice /C IQ /N /M "There is no image in your [input] folder. Place some in there and then press [I] to refresh or choose [Q] to go to main menu:"
+if %errorlevel% equ 1 goto setimg
+if %errorlevel% equ 2 goto main
+:loadimages
 echo(
 set j=0
 set maxb=0
 echo ---------------------------------------------------
-echo -  R. - Refresh.
+echo -  I. - Refresh.
 echo ---------------------------------------------------
-echo -  E. - Go to Main menu.
-for /r %%h in ("boot-resources\*.img") do (
+echo -  Q. - Go to Main menu.
+for %%h in ("input\*.img") do (
 	set /a j+=1
 	echo ---------------------------------------------------
 	echo -  !j!. - %%~nxh
-	set bootlist!j!=%%~nxh
+	set imglist!j!=%%~nxh
 	if !j! gtr !maxb! set maxb=!j!
 )
 echo ---------------------------------------------------
 echo(
-set /p bootopt=Type an image number then press ENTER: || set bootopt="0"
-if %bootopt%=="0" goto booterror
-if /I %bootopt%==R goto boot
-if /I %bootopt%==E goto main
-if %bootopt% gtr %maxb% goto booterror
-set bootlist=!bootlist%bootopt%!
-set workfile=%bootlist%
-set filetype=bootimage
-copy "boot-resources\%bootlist%" "working\%workfile%" >nul
+set /p imgopt=Type an image number then press ENTER: || set imgopt="0"
+if %imgopt%=="0" goto imgerror
+if /I %imgopt%==B goto setimg
+if /I %imgopt%==Q goto main
+if %imgopt% gtr %maxb% goto imgerror
+set imglist=!imglist%imgopt%!
+set workfile=%imglist%
+for /l %%i in (1,1,48) do set workfile=!workfile:  = !
+set workfile=%workfile: =_%
+for /l %%j in (1,1,12) do set workfile=!workfile:..=.!
+set workfile=%workfile:.=_%
+set workfile=%workfile:_img=.img%
+copy "input\%imglist%" "working\%workfile%" >nul 2>&1
 goto imgmenu
-:booterror
+:imgerror
 echo(
-cecho {0C}That is not a valid option. Please try again! {#}{\n}
-PING -n 3 127.0.0.1>nul
-goto boot
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:recovery
-set workfile=
-set filetype=
-set workfolder=
-cls
-echo ***************************************************
-echo *                                                 *
-cecho *      {0B}Carliv Image Kitchen for Android{#} v1.3      *{\n}
-cecho *     boot+recovery images (c)2016 {0B}carliv@xda{#}     *{\n}
-cecho * including support for {0E}MTK powered {#}phones images *{\n}
-cecho *               {0A}WINDOWS x86 {#}version               *{\n}
-echo *                                                 *
-echo ***************************************************
-cecho *             {0E}RECOVERY images{#} section             *{\n}
-echo ***************************************************
-echo(
-for /f %%a in ('dir /b "recovery-resources\*.img"') do (
-   goto loadrec
-)
-set /p norec=There is no image in your [recovery-resources] folder. Place some in there and then press [R] to start again or [Q] to go to main menu, then press ENTER: || set norec="0"
-if %norec%=="0" goto recerror
-if /I %norec%==R goto recovery
-if /I %norec%==Q goto main
-:loadrec
-set i=0
-set maxa=0
-echo ---------------------------------------------------
-echo -  R. - Refresh.
-echo ---------------------------------------------------
-echo -  E. - Go to Main menu.
-for /r %%b in ("recovery-resources\*.img") do (
-	set /a i+=1
-	echo ---------------------------------------------------
-	echo -  !i!. - %%~nxb
-	set reclist!i!=%%~nxb
-	if !i! gtr !maxa! set maxa=!i!
-)
-echo ---------------------------------------------------
-echo(
-set /p recopt=Type an image number then press ENTER: || set recopt="0"
-if %recopt%=="0" goto recerror
-if /I %recopt%==R goto recovery
-if /I %recopt%==E goto main
-if %recopt% gtr %maxa% goto recerror
-set reclist=!reclist%recopt%!
-set workfile=%reclist%
-set filetype=recoveryimage
-copy "recovery-resources\%reclist%" "working\%workfile%" >nul
-goto imgmenu
-:recerror
-echo(
-cecho {0C}That is not a valid option. Please try again! {#}{\n}
-PING -n 3 127.0.0.1>nul
-goto recovery
+ecco {0C}That is not a valid option. Please try again! {#}{\n}
+PING -n 3 127.0.0.1>nul 2>&1
+goto setimg
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :img_unpack
 cls
-copy "scripts\unpack_img.bat" "unpack_img.bat" >nul
-if %filetype%==bootimage goto unpackboot
-if %filetype%==recoveryimage goto unpackrecovery
-:unpackboot
-copy "working\%workfile%" boot.img >nul
-call unpack_img.bat boot.img %workfolder%
-goto endunpack
-:unpackrecovery
-copy "working\%workfile%" recovery.img >nul
-call unpack_img.bat recovery.img %workfolder%
-:endunpack
-if exist boot.img del boot.img >nul
-if exist recovery.img del recovery.img >nul
-if exist unpack_img.bat del unpack_img.bat >nul
+copy "scripts\unpack_img.bat" "unpack_img.bat" >nul 2>&1
+copy "working\%workfile%" cl.img >nul 2>&1
+call unpack_img.bat cl.img %workfolder%
+if exist cl.img del cl.img >nul 2>&1
+if exist unpack_img.bat del unpack_img.bat >nul 2>&1
+if exist "%workfolder%\ramdisk\sbin\recovery" ( 
+	echo recovery > "%workfolder%\recovery.txt"
+)
+if not exist "%workfolder%\ramdisk\sbin\recovery" ( 
+	if exist "%workfolder%\ramdisk\system\bin\recovery" ( 
+		echo boot_as_recovery > "%workfolder%\boot.txt"
+	) else (
+		echo boot > "%workfolder%\boot.txt"
+	)
+)
 pause
 goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :img_repack
 cls
-copy "scripts\repack_img.bat" "repack_img.bat" >nul
-call repack_img.bat "%workfolder%"
-echo(
-cecho You can find it in {0E}[output]{#} folder.{\n}
-if exist repack_img.bat del repack_img.bat >nul
-pause
-goto imgmenu
-:img_info
-cls
-copy "scripts\image_info.bat" "image_info.bat" >nul
-copy "working\%workfile%" "%workfile%" >nul
-call image_info.bat "%workfile%"
-if exist "%workfile%" del "%workfile%" >nul
-if exist image_info.bat del image_info.bat >nul
+copy "scripts\repack_img.bat" "repack_img.bat" >nul 2>&1
+call repack_img.bat %workfolder%
+ecco You can find it in {0E}[output]{#} folder.{\n}
+if exist repack_img.bat del repack_img.bat >nul 2>&1
 pause
 goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -264,27 +188,28 @@ goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :delete_all
 cls
-copy "scripts\clean_all.bat" "clean_all.bat" >nul
+copy "scripts\clean_all.bat" "clean_all.bat" >nul 2>&1
 call clean_all.bat
-if exist clean_all.bat del clean_all.bat >nul
-PING -n 3 127.0.0.1>nul
+if exist clean_all.bat del clean_all.bat >nul 2>&1
+PING -n 2 127.0.0.1>nul 2>&1
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :delete_output
 cls
-copy "scripts\clean_output.bat" "clean_output.bat" >nul
+copy "scripts\clean_output.bat" "clean_output.bat" >nul 2>&1
 call clean_output.bat
-if exist clean_output.bat del clean_output.bat >nul
-PING -n 3 127.0.0.1>nul
+if exist clean_output.bat del clean_output.bat >nul 2>&1
+PING -n 2 127.0.0.1>nul 2>&1
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :error
 echo(
-cecho {0C}The scripts and executables can't get execution permission! The kitchen won't run this way. {#}{\n}
-PING -n 3 127.0.0.1>nul
+ecco {0C}The scripts and executables can't get execution permissions! The kitchen won't run this way. {#}{\n}
+PING -n 3 127.0.0.1>nul 2>&1
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end
 echo(
-for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul
-PING -n 1 127.0.0.1>nul
+for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul 2>&1
+PING -n 1 127.0.0.1>nul 2>&1
+exit /b 0
