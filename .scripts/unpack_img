@@ -1,9 +1,9 @@
 #!/bin/bash
-e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
+e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e"92;01m";m=$e"95;01m";
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2016 carliv@xda     #
+#     boot+recovery images copyright-2020 carliv.eu      #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -12,19 +12,20 @@ abort() { cd "$PWD"; echo " "; echo -e "$cy >>$c$r Exit script$c\n"; }
 bin="$PWD/.bin";
 chmod -R 755 "$bin"/*;
 cd "$PWD";
-unpackbootimg=$bin/unpackbootimg;
+unpackbootimg="$bin"/unpackbootimg;
 ###########################################################
 clear;
-echo -e "
-****************************************************
-*                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.3       *
-*  boot+recovery images copyright-2016$cy carliv@xda$c  *
-*  including support for MTK powered phones images *
-*                $g LINUX x86 version$c                *
-*             The unpacking images script          *
-*                                                  *
-****************************************************
+echo -e "$bb
+*****************************************************
+*                                                   *
+*      Carliv Image Kitchen for Android v2.1        *
+*  boot+recovery images copyright(c)2020 carliv.eu  *
+*  including support for MTK powered phones images  *
+*                 LINUX x86 version                 *
+*                                                   *
+*****************************************************$c
+*             The unpacking images script           *
+*****************************************************
 ";
 ###########################################################
 if [ ! "$1" ]; 
@@ -48,51 +49,8 @@ echo -e "Your image is$y $origfile$c";
 echo " ";
 wimage="$file";
 ###########################################################
-if [[ "$wimage" = "boot.img" ]];
-	then
-	if [ -f boot.img ];
-		then		
-		if [ "$file" == boot.img ];
-			then
-			cp -f boot.img bckp-boot.img;
-			else
-			mv -f boot.img bckp-boot.img;
-			cp -f "$file" bckp-"$file";
-			mv -f "$file" boot.img;
-		fi;
-		else
-		cp -f "$file" bckp-"$file";
-		mv -f "$file" boot.img;
-	fi;
-	if [[ $filename != *boot* ]];
-	then
-	  filename=boot-"$filename";
-	fi;
-fi;
-if [[ "$wimage" = "recovery.img" ]];
-	then
-	if [ -f recovery.img ];
-		then		
-		if [ "$file" == recovery.img ];
-			then
-			cp -f recovery.img bckp-recovery.img;
-			else
-			mv -f recovery.img bckp-recovery.img;
-			cp -f "$file" bckp-"$file";
-			mv -f "$file" recovery.img;
-		fi;
-		else
-		cp -f "$file" bckp-"$file";
-		mv -f "$file" recovery.img;
-	fi;
-	if [[ $filename != *recovery* ]];
-	then
-	  filename=recovery-"$filename";
-	fi;
-fi;
-###########################################################
 echo " ";
-echo -e "Create the$y $filename$c folder....";
+echo -e "Creating the$y $filename$c folder....";
 echo " ";
 if [ -d "$filename" ];
 	then
@@ -109,44 +67,7 @@ if [[ -z "$wimage" ]];
 fi;
 echo -e "Unpacking the$y $file$c to$y $filename$c folder....";
 echo " ";
-if [ ! "$3" ];
-	then
-	$unpackbootimg -i "$wimage" -o "$filename";
-	else
-	$unpackbootimg -i "$wimage" -o "$filename" --mtk 1;
-fi;
-if [[ "$wimage" = "boot.img" ]];
-	then
-	rm -f boot.img;
-	if [ "$file" == boot.img ];
-		then
-		mv -f bckp-boot.img boot.img;
-		else
-		if [ -f bckp-boot.img ];
-			then
-			mv -f bckp-boot.img boot.img;
-			mv -f bckp-"$file" "$file";
-			else
-			mv -f bckp-"$file" "$file";
-		fi;		
-	fi;		
-fi;
-if [[ "$wimage" = "recovery.img" ]];
-	then
-	rm -f recovery.img;
-	if [ "$file" == recovery.img ];
-		then
-		mv -f bckp-recovery.img recovery.img;
-		else
-		if [ -f bckp-recovery.img ];
-			then
-			mv -f bckp-recovery.img recovery.img;
-			mv -f bckp-"$file" "$file";
-			else
-			mv -f bckp-"$file" "$file";
-		fi;		
-	fi;		
-fi;
+$unpackbootimg -i "$wimage" -o "$filename";
 cd "$filename";
 comprfile=$(find . -name "*-ramdisk.*");
 compress="${comprfile##*.}";
@@ -246,7 +167,19 @@ if [ "$compress" == "unknown" ];
 	  abort;
 	  exit 1;
 fi;
+###########################################################
 echo " ";
+if [[ ! -f "$filename"/ramdisk/sbin/recovery ]];
+	then
+	echo "boot" > "$filename"/boot.txt;
+	if [[ -f "$filename"/ramdisk/system/bin/recovery ]]; then
+		echo "boot_rec" > "$filename"/boot.txt;
+	fi;
+fi;
+if [[ -f "$filename"/ramdisk/sbin/recovery ]];
+	then
+	echo "recovery" > "$filename"/recovery.txt;
+fi;
 ###########################################################
 echo -e "Done! Your image is unpacked in$y $filename$c folder.";
 echo " ";

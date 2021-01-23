@@ -1,9 +1,9 @@
 #!/bin/bash
-e="\x1b[";c=$e"39;49;00m";y=$e"93;01m";cy=$e"96;01m";r=$e"1;91m";g=$e"92;01m";
+e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e"92;01m";m=$e"95;01m";
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2016 carliv@xda     #
+#     boot+recovery images copyright-2020 carliv.eu      #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -17,16 +17,17 @@ minigzip=$bin/minigzip;
 mkbootimg=$bin/mkbootimg;
 ###########################################################
 clear;
-echo -e "
-****************************************************
-*                                                  *
-*     $cy Carliv Image Kitchen for Android$c v1.3       *
-*  boot+recovery images copyright-2016$cy carliv@xda$c  *
-*  including support for MTK powered phones images *
-*                $g LINUX x86 version$c                *
-*             The repacking images script          *
-*                                                  *
-**************************************************** 
+echo -e "$bb
+*****************************************************
+*                                                   *
+*      Carliv Image Kitchen for Android v2.1        *
+*  boot+recovery images copyright(c)2020 carliv.eu  *
+*  including support for MTK powered phones images  *
+*                 LINUX x86 version                 *
+*                                                   *
+*****************************************************$c
+*             The repacking images script           *
+***************************************************** 
 ";
 ###########################################################
 if [ ! "$1" ]; 
@@ -143,22 +144,44 @@ echo " ";
 echo " ";
 echo "Getting the image repacking arguments....";
 echo " ";
+bboard="";
+bbase="";
+pagesz="";
+bkoff="";
+brmoff="";
+bsecoff="";
+second="";
+btgoff="";
+bdt="";
+dtb="";
+bdtboff="";
+dtbo="";
+acpio="";
+bosver="";
+bpaklev="";
+bhdrver="";
+bhashtp="";
 ######################### BOARD ###########################
 if [[ -f "$myname".img-board ]];
 	then
 	bname=$(cat "$myname".img-board);
-	echo -e "Board:$y             $bname$c";echo " ";
+	if [[ -n "$bname" ]]; then
+		bboard=" --board $bname";
+		echo -e "Board:$y             $bname$c";echo " ";
+	fi;
 fi;
 ########################## BASE ############################
 if [[ -f "$myname".img-base ]];
 	then
 	base=$(cat "$myname".img-base);
+	bbase=" --base $base";
 	echo -e "Base:$y              $base$c";echo " ";
 fi;
 ######################## PAGESIZE ##########################
 if [[ -f "$myname".img-pagesize ]];
 	then
 	pagesize=$(cat "$myname".img-pagesize);
+	pagesz=" --pagesize $pagesize";
 	echo -e "Pagesize:$y          $pagesize$c";echo " ";
 fi;
 ######################## CMDLINE ###########################
@@ -171,19 +194,21 @@ fi;
 if [[ -f "$myname".img-kernel_offset ]];
 	then
 	keoff=$(cat "$myname".img-kernel_offset);
+	bkoff=" --kernel_offset $keoff";
 	echo -e "Kernel offset:$y     $keoff$c";echo " ";
 fi;
 ##################### RAMDISK OFFSET #######################
 if [[ -f "$myname".img-ramdisk_offset ]];
 	then
 	ramoff=$(cat "$myname".img-ramdisk_offset);
+	brmoff=" --ramdisk_offset $ramoff";
 	echo -e "Ramdisk offset:$y    $ramoff$c";echo " ";
 fi;
 ###################### SECOND OFFSET ########################
 if [[ -f "$myname".img-second_offset ]];
 	then
 	flsec=$(cat "$myname".img-second_offset);
-	losec=" --second_offset $flsec";
+	bsecoff=" --second_offset $flsec";
 	echo -e "Second offset:$y     $flsec$c";echo " ";	
 fi;
 #################### SECOND BOOTLOADER ######################
@@ -197,31 +222,98 @@ fi;
 if [[ -f "$myname".img-tags_offset ]];
 	then
 	tagoff=$(cat "$myname".img-tags_offset);
+	btgoff=" --tags_offset $tagoff";
 	echo -e "Tags offset:$y       $tagoff$c";echo " ";
 fi;
 ############################ DT ##############################
 if [[ -f "$myname".img-dt ]];
 	then
 	ldtb="$myname".img-dt;
-	dtb=" --dt $ldtb";
+	bdt=" --dt $ldtb";
 	echo -e "Device tree blob:$y  $ldtb$c";echo " ";
 fi;
+############################ DTB #############################
+if [[ -f "$myname".img-dtb ]];
+	then
+	ldtbb="$myname".img-dtb;
+	dtb=" --dtb $ldtbb";
+	echo -e "Device tree blob:$y  $ldtbb$c";echo " ";
+fi;
+####################### DTB OFFSET ##########################
+if [[ -f "$myname".img-dtb_offset ]];
+	then
+	dtboff=$(cat "$myname".img-dtb_offset);
+	bdtboff=" --dtb_offset $dtboff";
+	echo -e "Device tree blob offset:$y       $dtboff$c";echo " ";
+fi;
+############################ DTBO ############################
+if [[ -f "$myname".img-dtbo ]];
+	then
+	ldtbbo="$myname".img-dtbo;
+	dtbo=" --recovery_dtbo $ldtbbo";
+	echo -e "Device tree blob overlay:$y  $ldtbbo$c";echo " ";
+fi;
+########################### ACPIO ############################
+if [[ -f "$myname".img-acpio ]];
+	then
+	lacpio="$myname".img-acpio;
+	acpio=" --recovery_acpio $lacpio";
+	echo -e "Non AB ACPIO:$y  $lacpio$c";echo " ";
+fi;
+####################### OS VERSION ##########################
+if [[ -f "$myname".img-os_version ]];
+	then
+	osvers=$(cat "$myname".img-os_version);
+	bosver=" --os_version $osvers";
+	echo -e "OS version:$y       $osvers$c";echo " ";
+fi;
+######################## OS PATCH ##########################
+if [[ -f "$myname".img-os_patch_level ]];
+	then
+	paklev=$(cat "$myname".img-os_patch_level);
+	bpaklev=" --os_patch_level $paklev";
+	echo -e "OS release date:$y       $paklev$c";echo " ";
+fi;
+##################### HEADER VERSION ########################
+if [[ -f "$myname".img-header_version ]];
+	then
+	hdrver=$(cat "$myname".img-header_version);
+	bhdrver=" --header_version $hdrver";
+	echo -e "Boot header version:$y       $hdrver$c";echo " ";
+fi;
+####################### HASH TYPE ##########################
+if [[ -f "$myname".img-hashtype ]];
+	then
+	hashtp=$(cat "$myname".img-hashtype);
+	bhashtp=" --hashtype $hashtp";
+	echo -e "Boot hash type:$y       $hashtp$c";echo " ";
+fi;
 ###########################################################
-stamp=$(date +"%Y%m%d-%H%M");
-newimage="$imgfolder"_"$stamp".img;
+stamp=cik-$(date +"%H%M");
+if [[ -f recovery.txt ]];
+	then
+	filetype=$(cat recovery.txt);
+elif [[ -f boot.txt ]];
+	then
+	filetype=$(cat boot.txt);
+else
+	filetype="boot";
+fi;
+newimage="$filetype"_temp.img;
+packedimg="$imgfolder"_"$stamp".img;
 echo " ";
 echo "Executing the repacking command...."
 echo " ";
 if [[ -f "$myname".img-mtk ]];
 	then
-	$mkbootimg --kernel "$kernel" --ramdisk "$ramdisk" --pagesize "$pagesize" --cmdline "$lcmd" --board "$bname" --base "$base" --kernel_offset "$keoff" --ramdisk_offset "$ramoff" --tags_offset "$tagoff"$losec$second$dtb --mtk 1 -o ../output/"$newimage";
+	$mkbootimg --kernel $kernel --ramdisk $ramdisk$second$dtb$dtbo$acpio --cmdline "$lcmd"$bboard$bbase$pagesz$bdt$bkoff$brmoff$bsecoff$btgoff$bdtboff$bosver$bpaklev$bhdrver$bhashtp --mtk 1 -o ../output/"$newimage";
 	if [ ! $? -eq "0" ]; 
 		then
 		abort;
 		exit 1;
 	fi;
 	else
-	$mkbootimg --kernel "$kernel" --ramdisk "$ramdisk" --pagesize "$pagesize" --cmdline "$lcmd" --board "$bname" --base "$base" --kernel_offset "$keoff" --ramdisk_offset "$ramoff" --tags_offset "$tagoff"$losec$second$dtb -o ../output/"$newimage";
+	$mkbootimg --kernel $kernel --ramdisk $ramdisk$second$dtb$dtbo$acpio --cmdline "$lcmd"$bboard$bbase$pagesz$bdt$bkoff$brmoff$bsecoff$btgoff$bdtboff$bosver$bpaklev$bhdrver$bhashtp -o ../output/"$newimage";
 	if [ ! $? -eq "0" ]; 
 		then
 		abort;
@@ -231,7 +323,8 @@ fi;
 compramdisk="$myname".img-ramdisk."$compress";
 rm -f "$compramdisk";
 cd ../;
+mv -f output/"$newimage" output/"$packedimg";
 echo " ";
 ###########################################################
-echo -e "Done! Your new image is packed as$y $newimage$c in$g [output]$c folder.";
+echo -e "Done! Your new image is packed as$y $packedimg$c in$g [output]$c folder.";
 echo " ";
