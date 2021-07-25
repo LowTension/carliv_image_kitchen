@@ -1,7 +1,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::                                                    :::
 :::          Carliv Image Kitchen for Android          :::
-:::  boot ^& recovery images copyright-2020 carliv.eu   :::
+:::      boot & recovery images (c)-2021 carliv.eu     :::
 :::   including support for MTK powered phones images  :::
 :::                                                    :::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -14,8 +14,8 @@ Setlocal EnableDelayedExpansion
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.1      *
-echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x86 version               *
 echo *                                                 *
@@ -42,10 +42,10 @@ echo(
 unpackbootimg -i %file% -o %folder%
 :donecheck
 cd %folder%
-for %%a in ("%file%-ramdisk.*") do set ext=%%~xa
+for %%a in ("ramdisk.*") do set ext=%%~xa
 ecco Compression used:{0E} %ext:~1% {#}{\n}
-type nul > %file%-ramdisk-compress
-echo %ext:~1% > "%file%-ramdisk-compress"
+type nul > ramdisk_compress
+echo %ext:~1% > "ramdisk_compress"
 echo(
 md ramdisk
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -56,10 +56,10 @@ echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :gz
 cd ramdisk
-gzip -dcv "../%file%-ramdisk.gz" | cpio -i
+gzip -dcv "../ramdisk.gz" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.gz"
+del "ramdisk.gz"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
@@ -67,10 +67,10 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lzma
 cd ramdisk
-xz -dcv "../%file%-ramdisk.lzma" | cpio -i
+xz -dcv "../ramdisk.lzma" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.lzma"
+del "ramdisk.lzma"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
@@ -78,10 +78,10 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :xz
 cd ramdisk
-xz -dcv "../%file%-ramdisk.xz" | cpio -i
+xz -dcv "../ramdisk.xz" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.xz"
+del "ramdisk.xz"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
@@ -89,10 +89,10 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :bz2
 cd ramdisk
-bzip2 -dcv "../%file%-ramdisk.bz2" | cpio -i
+bzip2 -dcv "../ramdisk.bz2" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.bz2"
+del "ramdisk.bz2"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
@@ -100,10 +100,10 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lz4
 cd ramdisk
-lz4 -dv "../%file%-ramdisk.lz4" stdout | cpio -i
+lz4 -dv "../ramdisk.lz4" stdout | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.lz4"
+del "ramdisk.lz4"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
@@ -111,13 +111,19 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lzo
 cd ramdisk
-lzop -dcv "../%file%-ramdisk.lzo" | cpio -i
+lzop -dcv "../ramdisk.lzo" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
-del "%file%-ramdisk.lzo"
+del "ramdisk.lzo"
 cd ..\
 echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
+goto end
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:bin
+echo(
+ecco {0C}Your ramdisk archive has an unknown format. Exit script.{#}{\n}
+echo(
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :ziperror

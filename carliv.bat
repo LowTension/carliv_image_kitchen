@@ -1,7 +1,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :::                                                    :::
 :::          Carliv Image Kitchen for Android          :::
-:::  boot ^& recovery images copyright-2020 carliv.eu   :::
+:::      boot & recovery images (c)-2021 carliv.eu     :::
 :::   including support for MTK powered phones images  :::
 :::                                                    :::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -17,20 +17,19 @@ ufind "%~dp0\bin" "%~dp0\scripts" -regex ".*\.\(exe\|bat\)" -exec chmod +x {} ;
 if %errorlevel% neq 0 goto error
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :main
+for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul 2>&1
 cls
 ver > nul
 echo( 
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.1      *
-echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x86 version               *
 echo *                                                 *
 ecco ***************************************************{0F}{\n}
-echo(
-echo  Choose what kind of image you need to work on.
 echo(
 echo ][**********************][
 ecco ][ {0B}I.  IMAGE MENU {#}      ][{\n}
@@ -58,8 +57,8 @@ ver > nul
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.1      *
-echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x86 version               *
 echo *                                                 *
@@ -77,14 +76,17 @@ echo(
 echo ][*************************][*************************][
 ecco ][  {0B}1. Unpack image{#}        ][  {0E}I. Other image{#}         ][{\n}
 echo ][*************************][*************************][
-ecco ][  {0A}2. Repack image{#}        ][  Q. Go to main menu     ][{\n}
+ecco ][  {0A}2. Repack image{#}        ][  {0D}F. Display image info{#}  ][{\n}
 echo ][*************************][*************************][
+echo ][                 Q. Go to main menu                 ][
+echo ][****************************************************][
 echo(
-choice /C 12IQ /N /M "Choose your option [ 1 - 2 - I - Q ]"
+choice /C 12IFQ /N /M "Choose your option [ 1 - 2 - I - F - Q ]"
 if %errorlevel% equ 1 goto img_unpack
 if %errorlevel% equ 2 goto img_repack
 if %errorlevel% equ 3 goto setimg
-if %errorlevel% equ 4 goto main
+if %errorlevel% equ 4 goto img_info
+if %errorlevel% equ 5 goto main
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :setimg
@@ -95,8 +97,8 @@ ver > nul
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.1      *
-echo *    boot ^& recovery images (c)2020 carliv.eu     *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x86 version               *
 echo *                                                 *
@@ -154,18 +156,22 @@ goto setimg
 :img_unpack
 cls
 copy "scripts\unpack_img.bat" "unpack_img.bat" >nul 2>&1
-copy "working\%workfile%" cl.img >nul 2>&1
-call unpack_img.bat cl.img %workfolder%
-if exist cl.img del cl.img >nul 2>&1
-if exist unpack_img.bat del unpack_img.bat >nul 2>&1
-if exist "%workfolder%\ramdisk\sbin\recovery" ( 
-	echo recovery > "%workfolder%\recovery.txt"
+attrib +h "unpack_img.bat" >nul 2>&1
+copy "working\%workfile%" cika.img >nul 2>&1
+call unpack_img.bat cika.img %workfolder%
+if exist cika.img del cika.img >nul 2>&1
+if exist unpack_img.bat (
+	attrib -h "unpack_img.bat" >nul 2>&1
+	del /q unpack_img.bat >nul 2>&1
+)
+if exist "%workfolder%\ramdisk\sbin\recovery" (
+	if exist "%workfolder%\mtk" ( 
+		echo 2 > "%workfolder%\mtk"
+	)
 )
 if not exist "%workfolder%\ramdisk\sbin\recovery" ( 
-	if exist "%workfolder%\ramdisk\system\bin\recovery" ( 
-		echo boot_as_recovery > "%workfolder%\boot.txt"
-	) else (
-		echo boot > "%workfolder%\boot.txt"
+	if exist "%workfolder%\mtk" ( 
+		echo 1 > "%workfolder%\mtk"
 	)
 )
 pause
@@ -174,9 +180,27 @@ goto imgmenu
 :img_repack
 cls
 copy "scripts\repack_img.bat" "repack_img.bat" >nul 2>&1
+attrib +h "repack_img.bat" >nul 2>&1
 call repack_img.bat %workfolder%
 ecco You can find it in {0E}[output]{#} folder.{\n}
-if exist repack_img.bat del repack_img.bat >nul 2>&1
+if exist repack_img.bat (
+	attrib -h "repack_img.bat" >nul 2>&1
+	del /q repack_img.bat >nul 2>&1
+)
+pause
+goto imgmenu
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:img_info
+cls
+copy "scripts\image_info.bat" "image_info.bat" >nul
+attrib +h "image_info.bat" >nul 2>&1
+copy "working\%workfile%" "%workfile%" >nul
+call image_info.bat "%workfile%"
+if exist "%workfile%" del "%workfile%" >nul
+if exist image_info.bat (
+	attrib -h "image_info.bat" >nul 2>&1
+	del /q image_info.bat >nul 2>&1
+)
 pause
 goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -188,17 +212,57 @@ goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :delete_all
 cls
-copy "scripts\clean_all.bat" "clean_all.bat" >nul 2>&1
-call clean_all.bat
-if exist clean_all.bat del clean_all.bat >nul 2>&1
+echo(    
+ecco {1B}
+echo ***************************************************
+echo *                                                 *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x86 version               *
+echo *                                                 *
+ecco ***************************************************{0F}{\n}
+echo *           Cleaning the kitchen folder           *
+echo ***************************************************
+echo(
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+attrib +h "bin" >nul 2>&1
+attrib +h "input" >nul 2>&1
+attrib +h "output" >nul 2>&1
+attrib +h "scripts" >nul 2>&1
+attrib +h "working" >nul 2>&1
+attrib +h "*.bat" >nul 2>&1
+attrib +h "*.img" >nul 2>&1
+for /d %%d in ("%~dp0\*") do rd /s /q "%%d" >nul 2>&1
+for /f %%a in ("%~dp0\*") do del /q "%%a" >nul 2>&1
+if exist "file_info.txt" (
+	del "file_info.txt"
+)
+attrib -h "input" >nul 2>&1
+attrib -h "output" >nul 2>&1
+attrib -h "*.bat" >nul 2>&1
+attrib -h "*.img" >nul 2>&1 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+echo(
+ecco {0E}The kitchen folder is clean now!{#}{\n}
 PING -n 2 127.0.0.1>nul 2>&1
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :delete_output
 cls
-copy "scripts\clean_output.bat" "clean_output.bat" >nul 2>&1
-call clean_output.bat
-if exist clean_output.bat del clean_output.bat >nul 2>&1
+echo( 
+ecco {1B}
+echo ***************************************************
+echo *                                                 *
+echo *      Carliv Image Kitchen for Android v2.3      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x86 version               *
+echo *                                                 *
+ecco ***************************************************{0F}{\n}
+echo(
+if exist "output" rmdir "output" /q /s >nul
+ecco {0E}The output folder is deleted!{#}{\n}
 PING -n 2 127.0.0.1>nul 2>&1
 goto main
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
