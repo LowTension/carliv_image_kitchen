@@ -1,0 +1,354 @@
+#!/bin/bash
+e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e"92;01m";m=$e"95;01m";
+##########################################################
+#                                                        #
+#           Carliv Image Kitchen for Android             #
+#       boot & recovery images (c)-2021 carliv.eu        #
+#    including support for MTK powered phones images     #
+#                                                        #
+##########################################################
+abort() { cd "$PWD"; echo " "; echo -e "$cy >>$c$r Exit script$c\n"; }
+###########################################################
+bin="$PWD/.bin";
+chmod -R 755 "$bin"/*;
+cd "$PWD";
+mkbootfs=$bin/mkbootfs;
+minigzip=$bin/minigzip;
+mkbootimg=$bin/mkbootimg;
+###########################################################
+clear;
+echo -e "$bb
+*****************************************************
+*                                                   *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
+*  including support for MTK powered phones images  *
+*                 LINUX x64 version                 *
+*                                                   *
+*****************************************************$c
+*             The repacking images script           *
+***************************************************** 
+";
+###########################################################
+if [ ! "$1" ]; 
+	then
+	echo -e "$r No folder selected. ERROR!$c";
+	abort;
+	exit 1;
+fi;
+if [ ! -d "output" ];
+	then
+	mkdir -p "output";
+fi;
+###########################################################
+imgfolder=$(basename "$1");
+echo -e "Processing the$y $imgfolder$c folder.";
+echo " ";
+cd "$imgfolder";
+###########################################################
+echo "Repacking the image....";
+echo " ";
+if [ ! -e "vendor_boot" ];
+	then
+	if [ ! -e "kernel" ];
+		then
+		echo -e "$r The$c$y kernel$c$r file is missing. Check your folder!. ERROR!$c";
+		abort;
+		exit 1;
+		else
+		kernel=kernel;
+	fi;
+fi;
+echo " ";
+echo -e "Getting the$y ramdisk$c compression....";
+echo " ";
+if [ ! -d "ramdisk" ];
+	then
+	echo -e "$r The$c$y ramdisk$c$r folder is missing. Check your folder!. ERROR!$c";
+	abort;
+	exit 1;
+fi;
+if [ ! -e "ramdisk_compress" ];
+	then
+	echo -e "$r The$c$y ramdisk_compress$c$r file is missing. Check your folder!. ERROR!$c";
+	abort;
+	exit 1;
+fi;
+compress=$(cat ramdisk_compress);
+echo -e "Compression used:$y $compress$c";
+echo " ";
+###########################################################
+if [ "$compress" == "gz" ];
+	then
+	$mkbootfs ramdisk | $minigzip -c -9 > ramdisk.gz;
+	ramdisk=ramdisk.gz;
+	echo -e "The ramdisk is:$y $ramdisk$c";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+if [ "$compress" == "lzma" ];
+	then
+	$mkbootfs ramdisk | xz --format=lzma -1zv > ramdisk.lzma;
+	ramdisk=ramdisk.lzma;
+	echo -e "The ramdisk is:$y $ramdisk$c";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+if [ "$compress" == "xz" ];
+	then
+	$mkbootfs ramdisk | xz -1zv -Ccrc32 > ramdisk.xz;
+	ramdisk=ramdisk.xz;
+	echo -e "The ramdisk is:$y $ramdisk$c";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+if [ "$compress" == "bz2" ];
+	then
+	$mkbootfs ramdisk | bzip2 -v > ramdisk.bz2;
+	ramdisk=ramdisk.bz2;
+	echo "The ramdisk is: $ramdisk";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+if [ "$compress" == "lzo" ];
+	then
+	$mkbootfs ramdisk | lzop -v > ramdisk.lzo;
+	ramdisk=ramdisk.lzo;
+	echo "The ramdisk is: $ramdisk";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+if [ "$compress" == "lz4" ];
+	then
+	$mkbootfs ramdisk | lz4 -l stdin stdout > ramdisk.lz4;
+	ramdisk=ramdisk.lz4;
+	echo "The ramdisk is: $ramdisk";
+	if [ ! $? -eq "0" ]; 
+	then
+	  echo -e "$r The$c$y ramdisk$c$r repacking process failed. Check on screen printed errors and find a solution. ERROR!$c";
+	  abort;
+	  exit 1;
+	fi;
+fi;
+echo " ";
+###########################################################
+echo " ";
+echo "Getting the image repacking arguments....";
+echo " ";
+bkernel="";
+bramdisk="";
+bboard="";
+bbase="";
+pagesz="";
+bkoff="";
+brmoff="";
+bsecoff="";
+bsecond="";
+btgoff="";
+bdt="";
+bdtb="";
+bdtboff="";
+bdtbo="";
+bacpio="";
+bosver="";
+bpaklev="";
+bhdrver="";
+bhashtp="";
+bcmdline="";
+bout="";
+bmtk="";
+######################### KERNEL ###########################
+if [ ! -e "vendor_boot" ];
+	then
+	if [ -e "kernel" ]; then
+		bkernel=" --kernel $kernel";
+		echo -e "The kernel is:$y kernel$c";echo " ";
+	fi;
+fi;
+######################### RAMDISK ###########################
+if [ -f "$ramdisk" ];
+	then
+	if [ ! -e "vendor_boot" ];
+		then
+		bramdisk=" --ramdisk $ramdisk";
+		else
+		bramdisk=" --vendor_ramdisk $ramdisk";
+	fi;
+	echo -e "The ramdisk is:$y $ramdisk$c";echo " ";
+fi;
+######################### BOARD ###########################
+if [ -e "board" ];
+	then
+	bname=$(cat board);
+	if [ -n "$bname" ]; then
+		bboard=" --board $bname";
+		echo -e "Board:$y             $bname$c";echo " ";
+	fi;
+fi;
+########################## BASE ############################
+if [ -e "base" ];
+	then
+	base=$(cat base);
+	bbase=" --base $base";
+	echo -e "Base:$y              $base$c";echo " ";
+fi;
+######################## PAGESIZE ##########################
+if [ -e "pagesize" ];
+	then
+	pagesize=$(cat pagesize);
+	pagesz=" --pagesize $pagesize";
+	echo -e "Pagesize:$y          $pagesize$c";echo " ";
+fi;
+######################## CMDLINE ###########################
+if [ -e "cmdline" ];
+	then
+	lcmd=$(cat cmdline);
+	if [ ! -e "vendor_boot" ];
+		then
+		bcmdline=" --cmdline ";
+		else
+		bcmdline=" --vendor_cmdline ";
+	fi;
+	echo -e "Command line:$y      $lcmd$c";echo " ";
+fi;
+##################### KERNEL OFFSET ########################
+if [ -e "kernel_offset" ];
+	then
+	keoff=$(cat kernel_offset);
+	bkoff=" --kernel_offset $keoff";
+	echo -e "Kernel offset:$y     $keoff$c";echo " ";
+fi;
+##################### RAMDISK OFFSET #######################
+if [ -e "ramdisk_offset" ];
+	then
+	ramoff=$(cat ramdisk_offset);
+	brmoff=" --ramdisk_offset $ramoff";
+	echo -e "Ramdisk offset:$y    $ramoff$c";echo " ";
+fi;
+###################### SECOND OFFSET ########################
+if [ -e "second_offset" ];
+	then
+	flsec=$(cat second_offset);
+	bsecoff=" --second_offset $flsec";
+	echo -e "Second offset:$y     $flsec$c";echo " ";	
+fi;
+#################### SECOND BOOTLOADER ######################
+if [ -e "second" ];
+	then
+	bsecond=" --second second";
+	echo -e "Second bootloader:$y second$c";echo " ";
+fi;
+###################### TAGS OFFSET ##########################
+if [ -e "tags_offset" ];
+	then
+	tagoff=$(cat tags_offset);
+	btgoff=" --tags_offset $tagoff";
+	echo -e "Tags offset:$y       $tagoff$c";echo " ";
+fi;
+############################ DT ##############################
+if [ -e "dt" ];
+	then
+	bdt=" --dt dt";
+	echo -e "Device tree blob:$y  dt$c";echo " ";
+fi;
+############################ DTB #############################
+if [ -e "dtb" ];
+	then
+	bdtb=" --dtb dtb";
+	echo -e "Device tree blob:$y  dtb$c";echo " ";
+fi;
+####################### DTB OFFSET ##########################
+if [ -e "dtb_offset" ];
+	then
+	dtboff=$(cat dtb_offset);
+	bdtboff=" --dtb_offset $dtboff";
+	echo -e "Device tree blob offset:$y       $dtboff$c";echo " ";
+fi;
+############################ DTBO ############################
+if [ -e "recovery_dtbo" ];
+	then
+	bdtbo=" --recovery_dtbo recovery_dtbo";
+	echo -e "Device tree blob overlay:$y  recovery_dtbo$c";echo " ";
+fi;
+########################### ACPIO ############################
+if [ -e "recovery_acpio" ];
+	then
+	bacpio=" --recovery_acpio recovery_acpio";
+	echo -e "Non AB ACPIO:$y  recovery_acpio$c";echo " ";
+fi;
+####################### OS VERSION ##########################
+if [ -e "os_version" ];
+	then
+	osvers=$(cat os_version);
+	bosver=" --os_version $osvers";
+	echo -e "OS version:$y       $osvers$c";echo " ";
+fi;
+######################## OS PATCH ##########################
+if [ -e "os_patch_level" ];
+	then
+	paklev=$(cat os_patch_level);
+	bpaklev=" --os_patch_level $paklev";
+	echo -e "OS release date:$y       $paklev$c";echo " ";
+fi;
+##################### HEADER VERSION ########################
+if [ -e "header_version" ];
+	then
+	hdrver=$(cat header_version);
+	bhdrver=" --header_version $hdrver";
+	echo -e "Boot header version:$y       $hdrver$c";echo " ";
+fi;
+####################### HASH TYPE ##########################
+if [ -e "hashtype" ];
+	then
+	hashtp=$(cat hashtype);
+	bhashtp=" --hashtype $hashtp";
+	echo -e "Boot hash type:$y       $hashtp$c";echo " ";
+fi;
+####################### MTK ##########################
+if [ -e "mtk" ];
+	then
+	lmtk=$(cat mtk);
+	bmtk=" --mtk $lmtk";
+fi;
+######################## OUTPUT ###########################
+if [ ! -e "vendor_boot" ];
+	then
+	bout=" --output";
+	else
+	bout=" --vendor_boot";
+fi;
+###########################################################
+stamp=cik-$(date +"%H%M");
+newimage=cika.img;
+packedimg="$imgfolder"-"$stamp".img;
+echo " ";
+echo "Executing the repacking command...."
+echo " ";
+$mkbootimg$bkernel$bramdisk$bsecond$bdtb$bdtbo$bacpio$bcmdline"$lcmd"$bboard$bbase$pagesz$bdt$bkoff$brmoff$bsecoff$btgoff$bdtboff$bosver$bpaklev$bhdrver$bhashtp$bmtk$bout ../output/$newimage;
+rm -f "$ramdisk";
+cd ../;
+mv -f output/"$newimage" output/"$packedimg";
+echo " ";
+###########################################################
+echo -e "Done! Your new image is packed as$y $packedimg$c in$g [output]$c folder.";
+echo " ";

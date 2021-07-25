@@ -1,0 +1,275 @@
+#!/bin/bash
+e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e"92;01m";m=$e"95;01m";
+##########################################################
+#                                                        #
+#           Carliv Image Kitchen for Android             #
+#       boot & recovery images (c)-2021 carliv.eu        #
+#    including support for MTK powered phones images     #
+#                                                        #
+##########################################################
+bin="$PWD/.bin";
+working="$PWD/.working";
+scripts="$PWD/.scripts";
+find "$bin" "$scripts" -type f ! -name "*.*" -exec chmod +x {} \;
+cd "$PWD";
+###########################################################
+
+pause()
+{
+read -s -n 1 -p "Press any key to continue...";
+}
+
+wrong()
+{
+echo -e "$y You typed $env - invalid option! Please try again$c";
+pause;
+main;
+}
+
+wrongbs()
+{
+echo -e "$y You typed $benv - invalid option! Please try again$c";
+pause;
+setimg;
+}
+
+wrongimg()
+{
+echo -e "$y You typed $imgenv - invalid option! Please try again$c";
+pause;
+imgmenu;
+}
+
+wrongbch()
+{
+echo -e "$y You typed $bchoice - invalid option! Please try again$c";
+pause;
+setimg;
+}
+
+quit() 
+{
+cd "$working";
+find . -maxdepth 1 -type f -exec rm -f {} \;
+cd ../;	
+clear; 
+exit;
+}
+
+img_unpack()
+{
+cp -f "$working"/"$workfile" cika.img > /dev/null 2>&1;
+"$scripts"/unpack_img  cika.img "$workfile";
+rm -f cika.img > /dev/null 2>&1;
+pause;
+imgmenu;
+}
+
+img_repack()
+{
+if [ -d "$wfolder" ]; 
+	then
+	"$scripts"/repack_img "$wfolder";
+	else
+	echo -e "The folder for repack $g $wfolder$c doesn't exists. Are you sure you didn't delete it?";
+fi;
+pause;
+imgmenu;
+}
+
+img_info()
+{
+cp -f "$working"/"$workfile" "$workfile" > /dev/null 2>&1;
+"$scripts"/image_info "$workfile";
+rm -f "$workfile" > /dev/null 2>&1;
+pause;
+imgmenu;
+}
+
+clean_all()
+{
+find . -maxdepth 1 -type f ! -name "image_info" ! -name "repack_img" ! -name "carliv" ! -name "unpack_img" ! -name "Instructions.txt" ! -name "*.img" ! -name "." ! -name ".*" ! -name "logo.png" -exec rm -f {} \; > /dev/null 2>&1;
+find . -maxdepth 1 -type d ! -name ".bin" ! -name "." ! -name ".*" ! -name "input" ! -name "output" ! -name ".working" ! -name ".scripts" -exec rm -rf {} \; > /dev/null 2>&1;
+echo -e "\n$y Done! Your working directory is clean now.$c";
+sleep 2;
+main;	
+}
+
+clean_output()
+{
+if [ -d "output" ];
+	then
+	rm -rf "output";
+	echo -e "\n$y Done! Your output directory is deleted.$c";
+	sleep 2;
+fi;
+main;	
+}
+
+setimg()
+{
+clear;
+echo -e "$bb
+*****************************************************
+*                                                   *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
+*  including support for MTK powered phones images  *
+*                 LINUX x64 version                 *
+*                                                   *
+*****************************************************$c 
+";     
+###########################################################
+echo " ";
+cd input;
+checkbimg=(`find ./ -maxdepth 1 -name "*.img"`);
+cd ../;
+if [ ${#checkbimg[@]} -eq 0 ]; then 
+	printf '%b' "There are no images in your [input] folder.\nPlace some in there and then press \n[I] to start again or \n[Q] to go to main menu!\n"
+	read -n1 bchoice;
+	case $bchoice in
+	 i|I) setimg;;
+	 q|Q) main;;
+	 *) wrongbch;;
+	esac
+fi;
+count=0;
+echo "---------------------------------------------------";
+echo "  I. - Refresh                                    ";
+echo "---------------------------------------------------";
+echo "  Q. - Go Back to main menu                        ";
+echo "---------------------------------------------------";
+for filename in `ls input`; do
+	count=$(($count+1));
+    file_array[$count]="$filename";
+    echo "  $count. - $filename";
+    echo "---------------------------------------------------";
+done
+printf '%b' "Type the file number, then press ENTER: ";
+read benv;
+if [ "$benv" == "I" ] || [ "$benv" == "i" ];
+    then
+      setimg;
+fi;
+if [ "$benv" == "Q" ] || [ "$benv" == "q" ];
+    then
+      main;
+fi;
+if [ "$benv" == "" ];
+    then
+      benv=none;
+fi;
+if [ "$(echo $benv | sed 's/[0-9]*//')" == "" ] || [ "benv"=="none" ];
+	then
+	  file_chosen=${file_array[$benv]};
+	  if [ "$file_chosen" == "" ];
+      then
+        wrongbs;
+      else
+        workfile="$file_chosen";
+      fi;
+	else
+	  wrongbs;
+fi;
+workfile="${workfile%.*}";workfile=$(echo "$workfile" | tr -s " ");workfile="${workfile// /_}";workfile=$(echo "$workfile" | tr -s ".");workfile="${workfile//./_}";workfile="${workfile}".img;
+yes | cp -f input/"$workfile" "$working"/"$workfile";
+imgmenu;
+}
+
+imgmenu()
+{
+clear;
+echo -e "$bb
+*****************************************************
+*                                                   *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
+*  including support for MTK powered phones images  *
+*                 LINUX x64 version                 *
+*                                                   *
+*****************************************************$c
+*               $cy IMG scripts$c section                *
+***************************************************** 
+"; 
+echo " ";
+echo " ";
+echo -e "Your selected image is$g $workfile$c"; 
+wfolder="${workfile%.*}";
+echo " ";
+if [ -d "$wfolder" ]; 
+	then
+	echo -e "The folder for repack will be$g $wfolder$c";
+	echo "Make sure that the folder exists and you didn't delete it, because if you did, it will display an error message.";
+	echo " ";	
+fi;
+###########################################################
+echo " ";
+echo "][*************************][*************************][";
+echo -e "][ $cy 1. Unpack image$c        ][ $y I. Other image$c         ][";
+echo "][*************************][*************************][";
+echo -e "][ $cy 2. Repack image$c        ][ $m F. Display image info$c  ][";
+echo "][*************************][*************************][";
+echo "][                Q. Back to Main menu                ][";
+echo "][*************************][*************************][";
+echo " ";
+printf '%b' "Type your option [ 1 - 2 - I - F - Q ] then press ENTER: ";
+read -n1 imgenv;
+case $imgenv in
+ 1) img_unpack;;
+ 2) img_repack;;
+ i|I) setimg;;
+ f|F) img_info;;
+ q|Q) main;;
+ *) wrongimg;;
+esac
+}
+
+main()
+{
+cd "$working";
+find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
+cd ../;
+clear;
+echo -e "$bb
+*****************************************************
+*                                                   *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
+*  including support for MTK powered phones images  *
+*                 LINUX x64 version                 *
+*                                                   *
+*****************************************************$c 
+";     
+###########################################################
+echo " ";
+echo " Choose what kind of image you need to work on.";
+echo " ";
+echo "][************************][";
+echo -e "][$cy I.   IMAGE MENU$c        ][";
+echo "][************************][";
+echo -e "][$g C.   CLEAR FOLDER$c      ][";
+echo "][************************][";
+echo -e "][$m O.   CLEAR OUTPUT$c      ][";
+echo "][************************][";
+echo "][ P.   SEE INSTRUCTIONS  ][";
+echo "][************************][";
+echo -e "][$r E.   EXIT$c              ][";
+echo "][************************][";
+echo " ";
+printf '%b' "Type your option [ I - C - O - P - E ]: ";
+read -n1 env;
+case $env in
+ i|I) setimg;;
+ c|C) clean_all;;
+ o|O) clean_output;;
+ p|P) cat "$scripts"/Instructions.txt; pause; continue;;
+ e|E) quit;;
+ *) wrong;;
+esac
+###########################################################
+}
+
+while :
+do
+	main;
+done
