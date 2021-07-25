@@ -3,7 +3,7 @@ e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2020 carliv.eu      #
+#       boot & recovery images (c)-2021 carliv.eu        #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -58,9 +58,9 @@ exit;
 
 img_unpack()
 {
-cp -f "$working"/"$workfile" cl.img > /dev/null 2>&1;
-"$scripts"/unpack_img  cl.img "$workfile";
-rm -f cl.img > /dev/null 2>&1;
+cp -f "$working"/"$workfile" cika.img > /dev/null 2>&1;
+"$scripts"/unpack_img  cika.img "$workfile";
+rm -f cika.img > /dev/null 2>&1;
 pause;
 imgmenu;
 }
@@ -77,6 +77,15 @@ pause;
 imgmenu;
 }
 
+img_info()
+{
+cp -f "$working"/"$workfile" "$workfile" > /dev/null 2>&1;
+"$scripts"/image_info "$workfile";
+rm -f "$workfile" > /dev/null 2>&1;
+pause;
+imgmenu;
+}
+
 clean_all()
 {
 find . -maxdepth 1 -type f ! -name "image_info" ! -name "repack_img" ! -name "carliv" ! -name "unpack_img" ! -name "Instructions.txt" ! -name "*.img" ! -name "." ! -name ".*" ! -name "logo.png" -exec rm -f {} \; > /dev/null 2>&1;
@@ -88,12 +97,12 @@ main;
 
 clean_output()
 {
-cd output;
-find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
-find . -maxdepth 1 -type d -exec rm -rf {} \; > /dev/null 2>&1;
-cd ../;
-echo -e "\n$y Done! Your output directory is clean now.$c";
-sleep 2;
+if [ -d "output" ];
+	then
+	rm -rf "output";
+	echo -e "\n$y Done! Your output directory is deleted.$c";
+	sleep 2;
+fi;
 main;	
 }
 
@@ -103,8 +112,8 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*      Carliv Image Kitchen for Android v2.1        *
-*  boot+recovery images copyright(c)2020 carliv.eu  *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x64 version                 *
 *                                                   *
@@ -137,12 +146,12 @@ for filename in `ls input`; do
     echo "---------------------------------------------------";
 done
 printf '%b' "Type the file number, then press ENTER: ";
-read -n1 benv;
-if [[ "$benv" = "I" || "$benv" = "i" ]];
+read benv;
+if [ "$benv" == "I" ] || [ "$benv" == "i" ];
     then
       setimg;
 fi;
-if [[ "$benv" = "Q" || "$benv" = "q" ]];
+if [ "$benv" == "Q" ] || [ "$benv" == "q" ];
     then
       main;
 fi;
@@ -173,8 +182,8 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*      Carliv Image Kitchen for Android v2.1        *
-*  boot+recovery images copyright(c)2020 carliv.eu  *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x64 version                 *
 *                                                   *
@@ -198,15 +207,18 @@ echo " ";
 echo "][*************************][*************************][";
 echo -e "][ $cy 1. Unpack image$c        ][ $y I. Other image$c         ][";
 echo "][*************************][*************************][";
-echo -e "][ $cy 2. Repack image$c        ][ Q. Back to Main menu    ][";
+echo -e "][ $cy 2. Repack image$c        ][ $m F. Display image info$c  ][";
+echo "][*************************][*************************][";
+echo "][                Q. Back to Main menu                ][";
 echo "][*************************][*************************][";
 echo " ";
-printf '%b' "Type your option [ 1 - 2 - I - Q ] then press ENTER: ";
+printf '%b' "Type your option [ 1 - 2 - I - F - Q ] then press ENTER: ";
 read -n1 imgenv;
 case $imgenv in
  1) img_unpack;;
  2) img_repack;;
  i|I) setimg;;
+ f|F) img_info;;
  q|Q) main;;
  *) wrongimg;;
 esac
@@ -214,12 +226,15 @@ esac
 
 main()
 {
+cd "$working";
+find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
+cd ../;
 clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*      Carliv Image Kitchen for Android v2.1        *
-*  boot+recovery images copyright(c)2020 carliv.eu  *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x64 version                 *
 *                                                   *
