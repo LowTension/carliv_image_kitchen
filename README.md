@@ -1,8 +1,8 @@
 <pre>
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v2.1                      #
-#              for android phones copyright(c)2016 carliv@xda                #
+#                 Carliv Image Kitchen for Android v2.3                      #
+#              for android phones copyright(c)2021 carliv.eu                 #
 #             including support for MTK powered phones images                #
 #                              LINUX version                                 #
 #                                                                            #

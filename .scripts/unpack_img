@@ -3,7 +3,7 @@ e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e
 ##########################################################
 #                                                        #
 #           Carliv Image Kitchen for Android             #
-#     boot+recovery images copyright-2020 carliv.eu      #
+#       boot & recovery images (c)-2021 carliv.eu        #
 #    including support for MTK powered phones images     #
 #                                                        #
 ##########################################################
@@ -18,8 +18,8 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*      Carliv Image Kitchen for Android v2.1        *
-*  boot+recovery images copyright(c)2020 carliv.eu  *
+*        Carliv Image Kitchen for Android v2.3      *
+*      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x86 version                 *
 *                                                   *
@@ -59,7 +59,7 @@ fi;
 mkdir -p "$filename";
 chmod 777 "$filename";
 ###########################################################
-if [[ -z "$wimage" ]];
+if [ ! -e "$wimage" ];
 	then
 	echo -e "$r No image to process. ERROR!$c";
 	abort;
@@ -69,11 +69,11 @@ echo -e "Unpacking the$y $file$c to$y $filename$c folder....";
 echo " ";
 $unpackbootimg -i "$wimage" -o "$filename";
 cd "$filename";
-comprfile=$(find . -name "*-ramdisk.*");
+comprfile=$(find . -name "ramdisk.*");
 compress="${comprfile##*.}";
 echo -e "Compression used:$y $compress ";
-filecomp="$wimage"-ramdisk-compress;
-if [ ! -f "$filecomp" ]
+filecomp=ramdisk_compress;
+if [ ! -e "$filecomp" ]
 	then 
 	echo "$compress" > "$filecomp" ;
 fi;
@@ -85,7 +85,7 @@ cd ramdisk;
 ###########################################################
 if [ "$compress" == "gz" ];
 	then
-	gzip -dcv "../$wimage-ramdisk.gz" | cpio -i ;
+	gzip -dcv "../ramdisk.gz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -93,12 +93,12 @@ if [ "$compress" == "gz" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.gz";
+	rm -f "ramdisk.gz";
 	cd ../ ;
 fi;
 if [ "$compress" == "lzma" ];
 	then
-	xz -dcv "../$wimage-ramdisk.lzma" | cpio -i ;
+	xz -dcv "../ramdisk.lzma" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -106,12 +106,12 @@ if [ "$compress" == "lzma" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.lzma";
+	rm -f "ramdisk.lzma";
 	cd ../ ;
 fi;
 if [ "$compress" == "xz" ];
 	then
-	xz -dcv "../$wimage-ramdisk.xz" | cpio -i ;
+	xz -dcv "../ramdisk.xz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -119,12 +119,12 @@ if [ "$compress" == "xz" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.xz";
+	rm -f "ramdisk.xz";
 	cd ../ ;
 fi;
 if [ "$compress" == "bz2" ];
 	then
-	bzip2 -dcv "../$wimage-ramdisk.bz2" | cpio -i ;
+	bzip2 -dcv "../ramdisk.bz2" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -132,12 +132,12 @@ if [ "$compress" == "bz2" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.bz2";
+	rm -f "ramdisk.bz2";
 	cd ../ ;
 fi;
 if [ "$compress" == "lzo" ];
 	then
-	lzop -dcv "../$wimage-ramdisk.lzo" | cpio -i ;
+	lzop -dcv "../ramdisk.lzo" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -145,12 +145,12 @@ if [ "$compress" == "lzo" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.lzo";
+	rm -f "ramdisk.lzo";
 	cd ../ ;
 fi;
 if [ "$compress" == "lz4" ];
 	then
-	lz4 -dv "../$wimage-ramdisk.lz4" stdout | cpio -i ;
+	lz4 -dv "../ramdisk.lz4" stdout | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
@@ -158,10 +158,10 @@ if [ "$compress" == "lz4" ];
 	  exit 1;
 	fi;
 	cd ../ ;
-	rm -f "$wimage-ramdisk.lz4";
+	rm -f "ramdisk.lz4";
 	cd ../ ;
 fi;
-if [ "$compress" == "unknown" ];
+if [ "$compress" == "bin" ];
 	then
 	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
 	  abort;
@@ -169,16 +169,17 @@ if [ "$compress" == "unknown" ];
 fi;
 ###########################################################
 echo " ";
-if [[ ! -f "$filename"/ramdisk/sbin/recovery ]];
+if [ ! -e "$filename"/ramdisk/sbin/recovery ];
 	then
-	echo "boot" > "$filename"/boot.txt;
-	if [[ -f "$filename"/ramdisk/system/bin/recovery ]]; then
-		echo "boot_rec" > "$filename"/boot.txt;
+	if [ -e "$filename"/mtk ]; then
+		echo "1" > "$filename"/mtk;
 	fi;
 fi;
-if [[ -f "$filename"/ramdisk/sbin/recovery ]];
+if [ -e "$filename"/ramdisk/sbin/recovery ];
 	then
-	echo "recovery" > "$filename"/recovery.txt;
+	if [ -e "$filename"/mtk ]; then
+		echo "2" > "$filename"/mtk;
+	fi;
 fi;
 ###########################################################
 echo -e "Done! Your image is unpacked in$y $filename$c folder.";
