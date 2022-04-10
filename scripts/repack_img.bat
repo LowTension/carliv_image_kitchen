@@ -14,7 +14,7 @@ Setlocal EnableDelayedExpansion
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -270,6 +270,7 @@ echo(
 echo Executing the repacking command....
 echo(
 mkbootimg%bkernel%%bramdisk%%second%%dtb%%dtbo%%acpio%%bcmdline%"%scmdline%"%bboard%%bbase%%pagesz%%bdt%%bkoff%%brmoff%%bsecoff%%btgoff%%bdtboff%%bosver%%bpaklev%%bhdrver%%bhashtp%%bmtk%%bout% ..\output\%newimage%
+if %errorlevel% neq 0 goto softerror
 :endcommand
 del "ramdisk.%compress%" >nul 2>&1
 cd ..\output
@@ -278,6 +279,7 @@ del %newimage% >nul 2>&1
 cd ..\
 echo(
 ecco Done. Your new image was repacked as{0E} %packedimg%.img{#}.{\n}
+ecco You can find it in {0E}[output]{#} folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :noinput
@@ -295,6 +297,11 @@ goto end
 :error
 echo(
 ecco {0C}There is an error in your folder. The kernel or ramdisk is missing. Exit script.{#}{\n}
+echo(
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:softerror
+echo(
+ecco {0C}There is an error executing the mkbootimg. Exit script.{#}{\n}
 echo(
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end

@@ -12,19 +12,20 @@ IF EXIST "%~dp0\bin" SET PATH="%~dp0\bin";%PATH%
 Setlocal EnableDelayedExpansion
 attrib +h "bin" >nul 2>&1
 attrib +h "scripts" >nul 2>&1
+if not exist "input" md input >nul 2>&1
+if not exist "working" md working >nul 2>&1
 attrib +h "working" >nul 2>&1
 ufind "%~dp0\bin" "%~dp0\scripts" -regex ".*\.\(exe\|bat\)" -exec chmod +x {} ;
 if %errorlevel% neq 0 goto error
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :main
-for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul 2>&1
 cls
 ver > nul
 echo( 
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -57,7 +58,7 @@ ver > nul
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -92,12 +93,13 @@ echo(
 :setimg
 set workfile=
 set workfolder=
+for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul 2>&1
 cls
 ver > nul
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -182,7 +184,6 @@ cls
 copy "scripts\repack_img.bat" "repack_img.bat" >nul 2>&1
 attrib +h "repack_img.bat" >nul 2>&1
 call repack_img.bat %workfolder%
-ecco You can find it in {0E}[output]{#} folder.{\n}
 if exist repack_img.bat (
 	attrib -h "repack_img.bat" >nul 2>&1
 	del /q repack_img.bat >nul 2>&1
@@ -192,14 +193,26 @@ goto imgmenu
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :img_info
 cls
-copy "scripts\image_info.bat" "image_info.bat" >nul
-attrib +h "image_info.bat" >nul 2>&1
-copy "working\%workfile%" "%workfile%" >nul
-call image_info.bat "%workfile%"
-if exist "%workfile%" del "%workfile%" >nul
-if exist image_info.bat (
-	attrib -h "image_info.bat" >nul 2>&1
-	del /q image_info.bat >nul 2>&1
+echo(    
+ecco {1B}
+echo ***************************************************
+echo *                                                 *
+echo *      Carliv Image Kitchen for Android v2.6      *
+echo *    boot ^& recovery images (c)2021 carliv.eu     *
+echo * including support for MTK powered phones images *
+echo *               WINDOWS x64 version               *
+echo *                                                 *
+ecco ***************************************************{0F}{\n}
+echo *          The informations image script          *
+echo ***************************************************
+echo(
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+if exist "%workfile%.txt" (
+	type "%workfile%.txt"
+)
+if not exist "%workfile%.txt" ( 
+	unpackbootimg -i "working\%workfile%" --info
+	unpackbootimg -i "working\%workfile%" --info > %workfile%.txt
 )
 pause
 goto imgmenu
@@ -216,7 +229,7 @@ echo(
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -233,10 +246,11 @@ attrib +h "scripts" >nul 2>&1
 attrib +h "working" >nul 2>&1
 attrib +h "*.bat" >nul 2>&1
 attrib +h "*.img" >nul 2>&1
+for /d %%d in ("%~dp0\*") do takeown /f "%%d" /r /d y >nul 2>&1
 for /d %%d in ("%~dp0\*") do rd /s /q "%%d" >nul 2>&1
-for /f %%a in ("%~dp0\*") do del /q "%%a" >nul 2>&1
-if exist "file_info.txt" (
-	del "file_info.txt"
+for /f %%a in ("%~dp0\*") do del /f /q "%%a" >nul 2>&1
+if exist "*.txt" (
+	del "*.txt"
 )
 attrib -h "input" >nul 2>&1
 attrib -h "output" >nul 2>&1
@@ -254,7 +268,7 @@ echo(
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -274,6 +288,6 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end
 echo(
-for /f %%a in ("%~dp0\working\*") do del /q "%%a" >nul 2>&1
+if exist "working" rd /s/q working >nul 2>&1
 PING -n 1 127.0.0.1>nul 2>&1
 exit /b 0

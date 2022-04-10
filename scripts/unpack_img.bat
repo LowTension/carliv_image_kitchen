@@ -14,7 +14,7 @@ Setlocal EnableDelayedExpansion
 ecco {1B}
 echo ***************************************************
 echo *                                                 *
-echo *      Carliv Image Kitchen for Android v2.3      *
+echo *      Carliv Image Kitchen for Android v2.6      *
 echo *    boot ^& recovery images (c)2021 carliv.eu     *
 echo * including support for MTK powered phones images *
 echo *               WINDOWS x64 version               *
@@ -40,10 +40,10 @@ md %folder%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo(
 unpackbootimg -i %file% -o %folder%
+if %errorlevel% neq 0 goto verserror
 :donecheck
 cd %folder%
 for %%a in ("ramdisk.*") do set ext=%%~xa
-ecco Compression used:{0E} %ext:~1% {#}{\n}
 type nul > ramdisk_compress
 echo %ext:~1% > "ramdisk_compress"
 echo(
@@ -67,7 +67,7 @@ goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :lzma
 cd ramdisk
-xz -dcv "../ramdisk.lzma" | cpio -i
+xz -dcv --format=lzma "../ramdisk.lzma" | cpio -i
 if %errorlevel% neq 0 goto ziperror
 cd ..\
 del "ramdisk.lzma"
@@ -120,7 +120,7 @@ echo(
 ecco Done. Your image is unpacked in{0E} %folder% {#}folder.{\n}
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:bin
+:cpio
 echo(
 ecco {0C}Your ramdisk archive has an unknown format. Exit script.{#}{\n}
 echo(
@@ -129,6 +129,12 @@ goto end
 :ziperror
 echo(
 ecco {0C}Your ramdisk archive is corrupt or unknown format. Exit script.{#}{\n}
+echo(
+goto end
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:verserror
+echo(
+ecco {0C}Boot and recovery images with header version 4 or above are not supported. Exit script.{#}{\n}
 echo(
 goto end
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
