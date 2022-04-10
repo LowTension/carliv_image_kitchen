@@ -20,7 +20,7 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*        Carliv Image Kitchen for Android v2.3      *
+*        Carliv Image Kitchen for Android v2.6      *
 *      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x86 version                 *

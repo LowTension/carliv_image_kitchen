@@ -9,9 +9,13 @@ e="\x1b[";c=$e"00m";y=$e"93;01m";cy=$e"96;01m";bb=$e"96;44;01m";r=$e"1;91m";g=$e
 ##########################################################
 bin="$PWD/.bin";
 working="$PWD/.working";
+mkdir -p "$working";
+input="$PWD/input";
+mkdir -p "$input";
 scripts="$PWD/.scripts";
 find "$bin" "$scripts" -type f ! -name "*.*" -exec chmod +x {} \;
 cd "$PWD";
+unpackbootimg="$bin"/unpackbootimg;
 ###########################################################
 
 pause()
@@ -49,9 +53,10 @@ setimg;
 
 quit() 
 {
-cd "$working";
-find . -maxdepth 1 -type f -exec rm -f {} \;
-cd ../;	
+if [ -d "$working" ];
+	then
+	rm -rf "$working";
+fi;	
 clear; 
 exit;
 }
@@ -79,9 +84,33 @@ imgmenu;
 
 img_info()
 {
-cp -f "$working"/"$workfile" "$workfile" > /dev/null 2>&1;
-"$scripts"/image_info "$workfile";
-rm -f "$workfile" > /dev/null 2>&1;
+clear;
+echo -e "$bb
+*****************************************************
+*                                                   *
+*        Carliv Image Kitchen for Android v2.6      *
+*      boot & recovery images (c)2021 carliv.eu     *
+*  including support for MTK powered phones images  *
+*                 LINUX x86 version                 *
+*                                                   *
+*****************************************************$c 
+";     
+###########################################################
+echo " ";
+if [ -e "$workfile".txt ];
+	then
+	cat "$workfile".txt;
+	else
+	$unpackbootimg -i "$working"/"$workfile" --info;
+	RESULT=$?
+	if [ ! $RESULT -eq 0 ];
+		then
+		read -s -n 1 -p "Press any key to return...";
+		imgmenu;
+	fi;
+	$unpackbootimg -i "$working"/"$workfile" --info > "$workfile".txt;
+fi;
+echo " ";
 pause;
 imgmenu;
 }
@@ -108,11 +137,14 @@ main;
 
 setimg()
 {
+cd "$working";
+find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
+cd ../;
 clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*        Carliv Image Kitchen for Android v2.3      *
+*        Carliv Image Kitchen for Android v2.6      *
 *      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x86 version                 *
@@ -182,7 +214,7 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*        Carliv Image Kitchen for Android v2.3      *
+*        Carliv Image Kitchen for Android v2.6      *
 *      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x86 version                 *
@@ -226,14 +258,47 @@ esac
 
 main()
 {
-cd "$working";
-find . -maxdepth 1 -type f -exec rm -f {} \; > /dev/null 2>&1;
-cd ../;
+if ! [ -x "$(command -v gzip)" ]; 
+	then
+    echo "Please install gzip for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
+if ! [ -x "$(command -v cpio)" ]; 
+	then
+    echo "Please install cpio for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
+if ! [ -x "$(command -v bzip2)" ]; 
+	then
+    echo "Please install bzip2 for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
+if ! [ -x "$(command -v lzop)" ]; 
+	then
+    echo "Please install lzop for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
+if ! [ -x "$(command -v lz4)" ]; 
+	then
+    echo "Please install lz4 for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
+if ! [ -x "$(command -v xz)" ]; 
+	then
+    echo "Please install xz-utils for your distribution. REQUIRED!";
+    read -s -n 1 -p "Press any key to close this terminal...";
+    quit;
+fi;
 clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*        Carliv Image Kitchen for Android v2.3      *
+*        Carliv Image Kitchen for Android v2.6      *
 *      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x64 version                 *
@@ -242,7 +307,7 @@ echo -e "$bb
 ";     
 ###########################################################
 echo " ";
-echo " Choose what kind of image you need to work on.";
+echo " Choose the image you need to work on, from the input folder.";
 echo " ";
 echo "][************************][";
 echo -e "][$cy I.   IMAGE MENU$c        ][";
