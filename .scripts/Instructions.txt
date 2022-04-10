@@ -1,6 +1,6 @@
 ##############################################################################
 #                                                                            #
-#                 Carliv Image Kitchen for Android v2.3                      #
+#                 Carliv Image Kitchen for Android v2.6                      #
 #              for android phones copyright(c)2021 carliv.eu                 #
 #             including support for MTK powered phones images                #
 #                              LINUX version                                 #
@@ -25,9 +25,10 @@ My tool doesn't have restrictions on placement. For me it worked in last partiti
 
 Please respect my work and if you use it don't forget to hit the THANKS button in my thread or to make a donation to buy me a coffee. And if you take it and share it on other sites, or integrate it in other tools, give proper credits for my work.
 	
-I built from source every working module, and the lz4 binary. For everything to work well you need to have installed in your system these (my example is for ubuntu):
+I built from source every working module. For everything to work well you need to have installed in your system these (my example is for ubuntu):
 
 - sudo apt-get install bzip2
+- sudo apt-get install lz4
 - sudo apt-get install lzop
 - sudo apt-get install xz-utils
 	

@@ -18,7 +18,7 @@ clear;
 echo -e "$bb
 *****************************************************
 *                                                   *
-*        Carliv Image Kitchen for Android v2.3      *
+*        Carliv Image Kitchen for Android v2.6      *
 *      boot & recovery images (c)2021 carliv.eu     *
 *  including support for MTK powered phones images  *
 *                 LINUX x64 version                 *
@@ -68,6 +68,13 @@ fi;
 echo -e "Unpacking the$y $file$c to$y $filename$c folder....";
 echo " ";
 $unpackbootimg -i "$wimage" -o "$filename";
+RESULT=$?
+if [ ! $RESULT -eq 0 ];
+	then
+	rm -rf "$filename";
+	abort;
+	exit 1;
+fi;
 cd "$filename";
 comprfile=$(find . -name "ramdisk.*");
 compress="${comprfile##*.}";
@@ -85,10 +92,10 @@ cd ramdisk;
 ###########################################################
 if [ "$compress" == "gz" ];
 	then
-	gzip -dcv "../ramdisk.gz" | cpio -i ;
+	gzip -dfcv "../ramdisk.gz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -98,10 +105,10 @@ if [ "$compress" == "gz" ];
 fi;
 if [ "$compress" == "lzma" ];
 	then
-	xz -dcv "../ramdisk.lzma" | cpio -i ;
+	xz -dcv --format=lzma "../ramdisk.lzma" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -114,7 +121,7 @@ if [ "$compress" == "xz" ];
 	xz -dcv "../ramdisk.xz" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -127,7 +134,7 @@ if [ "$compress" == "bz2" ];
 	bzip2 -dcv "../ramdisk.bz2" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -140,7 +147,7 @@ if [ "$compress" == "lzo" ];
 	lzop -dcv "../ramdisk.lzo" | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -153,7 +160,7 @@ if [ "$compress" == "lz4" ];
 	lz4 -dv "../ramdisk.lz4" stdout | cpio -i ;
 	if [ ! $? -eq "0" ]; 
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 	fi;
@@ -163,7 +170,7 @@ if [ "$compress" == "lz4" ];
 fi;
 if [ "$compress" == "bin" ];
 	then
-	  echo -e "$r Your ramdisk archive is corrupt or is packed with an unsupported archive format. ERROR!$c";
+	  echo -e "$r Your ramdisk archive is corrupt, or is packed with an unsupported archive format, or contains magisk backup folder. ERROR!$c";
 	  abort;
 	  exit 1;
 fi;
